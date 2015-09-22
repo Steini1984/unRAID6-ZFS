@@ -171,24 +171,6 @@ ICAgICAgICA=
 </INLINE>
 </FILE>
 
-<FILE Run="/bin/bash">
-<INLINE>
-VERSION=$(uname -a)
-
-if [[ $VERSION == *"4.1.7-unRAID"* ]];then
-  echo "Running kernel 4.1.7";
-else
-  echo ""
-  echo "********************************************************************"
-  echo "Unsupported kernel detected! unRAID 6.1.3 only supported!"
-  echo ""
-  echo "********************************************************************"
-  echo ""
-fi
-</INLINE>
-</FILE>
-
-
 <FILE Name="&plugin;/packages/spl-0.6.5.1-unRAID-6.1.3.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
 <URL>&repo;/packages/spl-0.6.5.1-unRAID6.1.3.x86_64.tgz</URL>
 <MD5>24421f9d21a692435bb204e525aca0d5</MD5>
@@ -209,6 +191,15 @@ then
   modprobe zfs 
   zpool import -a >> /dev/null
   echo "Finished"
+  
+elif [[ $VERSION == *"4.1.5-unRAID"* ]];
+then
+  echo "********************************************************************"
+  echo "ZFS has been installed, but wont be loaded until you upgrade"
+  echo "to unRAID version 6.1.3"
+  echo "Please upgrade unRAID and reboot the server"
+  echo ""
+  echo "********************************************************************"
 else
   echo ""
   echo "********************************************************************"
