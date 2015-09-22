@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
 	<!ENTITY name      "unRAID6-ZFS">
 	<!ENTITY author    "Steini1984">
-	<!ENTITY version   "0.0.4">
+	<!ENTITY version   "0.0.5">
 	<!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
 	<!ENTITY pluginURL "&repo;/&name;.plg">
 	<!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -19,6 +19,9 @@
 
 
 <CHANGES>
+###2015.09.21
+- update to unRAID 6.1.3 (kernel 4.1.7)
+
 ###2015.09.20
 - update to spl-0.6.5.1 / zfs-0.6.5.1
 
@@ -30,8 +33,9 @@
 <FILE Name="&emhttp;/README.md">
 <INLINE>
 **ZFS for unRAID 6**
+*ONLY WORKS ON unRAID 6.1.3**
 
-The native Linux kernel port of the ZFS filesystem. Tested on unRAIDServer-6.1.2 but should work on all version running kernel 4.1.5
+The native Linux kernel port of the ZFS filesystem. 
 </INLINE>
 </FILE>
 
@@ -171,13 +175,13 @@ ICAgICAgICA=
 <INLINE>
 VERSION=$(uname -a)
 
-if [[ $VERSION == *"4.1.5-unRAID"* ]]
+if [[ $VERSION == *"4.1.7-unRAID"* ]]
 then
-  echo "Running kernel 4.1.5";
+  echo "Running kernel 4.1.7";
 else
   echo ""
   echo "********************************************************************"
-  echo "Unsupported kernel detected! This version of OpenZFS is compiled for 4.1.5-unRAID"
+  echo "Unsupported kernel detected! unRAID 6.1.3 only supported!
   echo ""
   echo "********************************************************************"
   echo ""
@@ -186,23 +190,35 @@ fi
 </FILE>
 
 
-<FILE Name="&plugin;/packages/spl-0.6.5.1-x86_64.tgz" Run="/sbin/upgradepkg --install-new">
-<URL>&repo;/packages/spl-0.6.5.1-x86_64.tgz</URL>
-<MD5>644f7c6a682b6b9d607f5a7337205d16</MD5>
+<FILE Name="&plugin;/packages/spl-0.6.5.1-unRAID-6.1.3.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
+<URL>&repo;/packages/spl-0.6.5.1-unRAID6.1.3.x86_64.tgz</URL>
+<MD5>24421f9d21a692435bb204e525aca0d5</MD5>
 </FILE>
 
-<FILE Name="&plugin;/packages/zfs-0.6.5.1-x86_64.tgz" Run="/sbin/upgradepkg --install-new">
-<URL>&repo;/packages/zfs-0.6.5.1-x86_64.tgz</URL>
-<MD5>cdefbb81f0de70cdb876a4625abb4c88</MD5>
+<FILE Name="&plugin;/packages/zfs-0.6.5.1-unRAID.6.1.3.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
+<URL>&repo;/packages/zfs-0.6.5.1-unRAID6.1.3.x86_64.tgz</URL>
+<MD5>5c7b01a8d124b3460a773cb964d14355</MD5>
 </FILE>
 
 <FILE Run="/bin/bash">
 <INLINE>
-echo "Loading ZFS modules and importing pools (this could take some time....)"
-depmod 
-modprobe zfs 
-zpool import -a >> /dev/null
-echo ""
+VERSION=$(uname -a)
+if [[ $VERSION == *"4.1.7-unRAID"* ]]
+then
+  echo "Loading ZFS modules and importing pools (this could take some time....)"
+  depmod 
+  modprobe zfs 
+  zpool import -a >> /dev/null
+  echo "Finished"
+else
+  echo ""
+  echo "********************************************************************"
+  echo "Unsupported kernel detected! This version of OpenZFS only works for"
+  echo "unRAID version 6.1.3 - Older versions might be available on github"
+  echo ""
+  echo "********************************************************************"
+  echo ""
+fi
 </INLINE>
 </FILE>
 
