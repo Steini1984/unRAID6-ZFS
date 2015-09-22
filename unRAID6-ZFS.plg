@@ -175,13 +175,12 @@ ICAgICAgICA=
 <INLINE>
 VERSION=$(uname -a)
 
-if [[ $VERSION == *"4.1.7-unRAID"* ]]
-then
+if [[ $VERSION == *"4.1.7-unRAID"* ]];then
   echo "Running kernel 4.1.7";
 else
   echo ""
   echo "********************************************************************"
-  echo "Unsupported kernel detected! unRAID 6.1.3 only supported!
+  echo "Unsupported kernel detected! unRAID 6.1.3 only supported!"
   echo ""
   echo "********************************************************************"
   echo ""
