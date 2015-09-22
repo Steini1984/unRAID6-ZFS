@@ -203,7 +203,7 @@ fi
 <FILE Run="/bin/bash">
 <INLINE>
 VERSION=$(uname -a)
-if [[ $VERSION == *"4.1.7-unRAID"* ]]
+if [[ $VERSION == *"4.1.7-unRAID"* ]];
 then
   echo "Loading ZFS modules and importing pools (this could take some time....)"
   depmod 
