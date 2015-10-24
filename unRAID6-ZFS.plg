@@ -175,13 +175,13 @@ ICAgICAgICA=
 </INLINE>
 </FILE>
 
-<FILE Name="&plugin;/packages/spl-0.6.5.1-unRAID-6.1.3.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
-<URL>&repo;/packages/spl-0.6.5.1-unRAID6.1.3.x86_64.tgz</URL>
+<FILE Name="&plugin;/packages/spl-0.6.5.3-unRAID-6.1.3.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
+<URL>&repo;/packages/spl-0.6.5.3-unRAID6.1.3.x86_64.tgz</URL>
 <MD5>8b0c880280b722fb1948dd9d0e3362b9</MD5>
 </FILE>
 
-<FILE Name="&plugin;/packages/zfs-0.6.5.1-unRAID.6.1.3.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
-<URL>&repo;/packages/zfs-0.6.5.1-unRAID6.1.3.x86_64.tgz</URL>
+<FILE Name="&plugin;/packages/zfs-0.6.5.3-unRAID.6.1.3.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
+<URL>&repo;/packages/zfs-0.6.5.3-unRAID6.1.3.x86_64.tgz</URL>
 <MD5>33401b97ae99a5f17aef4524bd5122cc</MD5>
 </FILE>
 
