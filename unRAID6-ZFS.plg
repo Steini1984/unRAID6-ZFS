@@ -39,7 +39,8 @@
 
 <FILE Name="&emhttp;/README.md">
 <INLINE>
-** ZFS for unRAID 6 **
+ZFS for unRAID 6
+
 * ONLY WORKS ON unRAID 6.1.4 *
 
 The native Linux kernel port of the ZFS filesystem. 
