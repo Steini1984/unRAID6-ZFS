@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
 	<!ENTITY name      "unRAID6-ZFS">
 	<!ENTITY author    "Steini1984">
-	<!ENTITY version   "0.1.0">
+	<!ENTITY version   "0.1.1">
 	<!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
 	<!ENTITY pluginURL "&repo;/&name;.plg">
 	<!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -19,6 +19,9 @@
 
 
 <CHANGES>
+
+###2016.01.18
+- Remove old packages
 
 ###2016.01.18
 - Change path of the zfs tools
@@ -188,12 +191,12 @@ ICAgICAgICA=
 </INLINE>
 </FILE>
 
-<FILE Name="&plugin;/packages/spl-0.6.5.4-unRAID-6.1.7.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
+<FILE Name="&plugin;/packages/spl-0.6.5.4-unRAID6.1.7.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
 <URL>&repo;/packages/spl-0.6.5.4-unRAID6.1.7.x86_64.tgz</URL>
 <MD5>288b0b4c242fe947f41a2a4a1f731982</MD5>
 </FILE>
 
-<FILE Name="&plugin;/packages/zfs-0.6.5.4-unRAID.6.1.7.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
+<FILE Name="&plugin;/packages/zfs-0.6.5.4-unRAID6.1.7.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
 <URL>&repo;/packages/zfs-0.6.5.4-unRAID6.1.7.x86_64.tgz</URL>
 <MD5>57e386538e4726dd222c8bd682975705</MD5>
 </FILE>
@@ -203,6 +206,10 @@ ICAgICAgICA=
 VERSION=$(uname -a)
 if [[ $VERSION == *"4.1.15-unRAID"* ]];
 then
+  
+  #delte old files
+  find /boot/config/plugins/unRAID6-ZFS/packages/* ! -name "*0.6.5.4-unRAID6.1.7.x86_64.tgz" -exec rm {} \;
+
   echo "Loading ZFS modules and importing pools (this could take some time....)"
   depmod 
   modprobe zfs 
