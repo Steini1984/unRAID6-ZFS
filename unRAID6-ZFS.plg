@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
 	<!ENTITY name      "unRAID6-ZFS">
 	<!ENTITY author    "Steini1984">
-	<!ENTITY version   "0.0.8">
+	<!ENTITY version   "0.0.9">
 	<!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
 	<!ENTITY pluginURL "&repo;/&name;.plg">
 	<!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -19,6 +19,9 @@
 
 
 <CHANGES>
+
+###2016.01.18
+- update to unRAID 6.1.7 (kernel 4.1.15)
 
 ###2015.11.18
 - document unRAID 6.1.5 - 6.1.6 (no change in kernel)
@@ -44,7 +47,7 @@
 <INLINE>
 ZFS for unRAID 6
 
-* ONLY SUPPORTED ON unRAID 6.1.6 (and others with kernel 4.1.13) *
+* ONLY SUPPORTED ON unRAID 6.1.7 (and others with kernel 4.1.15) *
 
 The native Linux kernel port of the ZFS filesystem. 
 </INLINE>
@@ -182,20 +185,20 @@ ICAgICAgICA=
 </INLINE>
 </FILE>
 
-<FILE Name="&plugin;/packages/spl-0.6.5.3-unRAID-6.1.4.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
-<URL>&repo;/packages/spl-0.6.5.3-unRAID6.1.4.x86_64.tgz</URL>
-<MD5>41700aaec22f70d2ae257544d6f53695</MD5>
+<FILE Name="&plugin;/packages/spl-0.6.5.4-unRAID-6.1.7.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
+<URL>&repo;/packages/spl-0.6.5.4-unRAID6.1.7.x86_64.tgz</URL>
+<MD5>360edc994a3cdc0eeaaf4ae6b677595e</MD5>
 </FILE>
 
-<FILE Name="&plugin;/packages/zfs-0.6.5.3-unRAID.6.1.4.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
-<URL>&repo;/packages/zfs-0.6.5.3-unRAID6.1.4.x86_64.tgz</URL>
-<MD5>31b8ee8c406f211a78c7dbf56ba2609e</MD5>
+<FILE Name="&plugin;/packages/zfs-0.6.5.4-unRAID.6.1.7.x86_64.tgz" Run="/sbin/upgradepkg --install-new">
+<URL>&repo;/packages/zfs-0.6.5.4-unRAID6.1.7.x86_64.tgz</URL>
+<MD5>876349b0caf7e06cc6fc4c94af94537f</MD5>
 </FILE>
 
 <FILE Run="/bin/bash">
 <INLINE>
 VERSION=$(uname -a)
-if [[ $VERSION == *"4.1.13-unRAID"* ]];
+if [[ $VERSION == *"4.1.15-unRAID"* ]];
 then
   echo "Loading ZFS modules and importing pools (this could take some time....)"
   depmod 
@@ -203,20 +206,11 @@ then
   zpool import -a >> /dev/null
   echo "Finished"
   
-elif [[ $VERSION == *"4.1.7-unRAID"* ]];
-then
-  echo "********************************************************************"
-  echo "ZFS has been installed, but wont be loaded until you upgrade"
-  echo "to unRAID version 6.1.6"
-  echo "Please upgrade unRAID and reboot the server"
-  echo ""
-  echo "********************************************************************"
 else
   echo ""
   echo "********************************************************************"
   echo "Unsupported kernel detected! This version of OpenZFS only works for"
-  echo "unRAID version 6.1.6 - Older versions might be available on github"
-  echo ""
+  echo "unRAID version 6.1.7 - Older versions might be available on github"
   echo "********************************************************************"
   echo ""
 fi
