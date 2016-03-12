@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "0.2.0">
+  <!ENTITY version   "0.2.1">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -20,6 +20,9 @@
 
 <CHANGES>
 
+###2016.03.12
+- Only download needed tgz (Thanks gfjardim)
+- Remove old tgz
 
 ###2016.03.11
 - Change plugin to support unRAID 6.1.2 - 6.2.0-beta18 (kernel 4.4.4)
@@ -205,148 +208,105 @@ ICAgICAgICA=
 </INLINE>
 </FILE>
 
-<!-- Packages for 6.2.0-beta18 -->
-<FILE Name="&plugin;/packages/spl-0.6.5.5-unRAID6.2.0-beta18.x86_64.tgz">
-<URL>&repo;/packages/spl-0.6.5.5-unRAID6.2.0-beta18.x86_64.tgz</URL>
-<MD5>6bab826e24b0c3ccc08b962e8a64058c</MD5>
-</FILE>
-
-<FILE Name="&plugin;/packages/zfs-0.6.5.5-unRAID6.2.0-beta18.x86_64.tgz">
-<URL>&repo;/packages/zfs-0.6.5.5-unRAID6.2.0-beta18.x86_64.tgz</URL>
-<MD5>1ee9e5c1d85155ef87138aaee78aefb6</MD5>
-</FILE>
-
-
-<!-- Packages for 6.1.9 -->
-<FILE Name="&plugin;/packages/spl-0.6.5.4-unRAID6.1.9.x86_64.tgz">
-<URL>&repo;/packages/spl-0.6.5.4-unRAID6.1.9.x86_64.tgz</URL>
-<MD5>ef09a51f6fcc069ad4897b5e06088d00</MD5>
-</FILE>
-
-<FILE Name="&plugin;/packages/zfs-0.6.5.4-unRAID6.1.9.x86_64.tgz">
-<URL>&repo;/packages/zfs-0.6.5.4-unRAID6.1.9.x86_64.tgz</URL>
-<MD5>74ee8f3698cd6f64839bcdf09abe5534</MD5>
-</FILE>
-
-
-<!-- Packages for 6.1.8 -->
-
-<FILE Name="&plugin;/packages/spl-0.6.5.4-unRAID6.1.8.x86_64.tgz">
-<URL>&repo;/packages/spl-0.6.5.4-unRAID6.1.8.x86_64.tgz</URL>
-<MD5>3ef7a7eb63bac07475dc7e9eee5132c5</MD5>
-</FILE>
-
-<FILE Name="&plugin;/packages/zfs-0.6.5.4-unRAID6.1.8.x86_64.tgz">
-<URL>&repo;/packages/zfs-0.6.5.4-unRAID6.1.8.x86_64.tgz</URL>
-<MD5>ae2c5bd933f1376b52a73a07862db2bc</MD5>
-</FILE>
-
-
-<!-- Packages for 6.1.7 -->
-
-<FILE Name="&plugin;/packages/spl-0.6.5.4-unRAID6.1.7.x86_64.tgz">
-<URL>&repo;/packages/spl-0.6.5.4-unRAID6.1.7.x86_64.tgz</URL>
-<MD5>288b0b4c242fe947f41a2a4a1f731982</MD5>
-</FILE>
-
-<FILE Name="&plugin;/packages/zfs-0.6.5.4-unRAID.1.7.x86_64.tgz">
-<URL>&repo;/packages/zfs-0.6.5.4-unRAID6.1.7.x86_64.tgz</URL>
-<MD5>57e386538e4726dd222c8bd682975705</MD5>
-</FILE>
-
-
-<!-- Packages for 6.1.4 - 6.1.6  -->
-
-<FILE Name="&plugin;/packages/spl-0.6.5.3-unRAID6.1.4.x86_64.tgz">
-<URL>&repo;/packages/spl-0.6.5.3-unRAID6.1.4.x86_64.tgz</URL>
-<MD5>41700aaec22f70d2ae257544d6f53695</MD5>
-</FILE>
-
-<FILE Name="&plugin;/packages/zfs-0.6.5.3-unRAID6.1.4.x86_64.tgz">
-<URL>&repo;/packages/zfs-0.6.5.3-unRAID6.1.4.x86_64.tgz</URL>
-<MD5>31b8ee8c406f211a78c7dbf56ba2609e</MD5>
-</FILE>
-
-
-<!-- Packages for 6.1.3  -->
-
-<FILE Name="&plugin;/packages/spl-0.6.5.3-unRAID6.1.3.x86_64.tgz">
-<URL>&repo;/packages/spl-0.6.5.3-unRAID6.1.3.x86_64.tgz</URL>
-<MD5>8b0c880280b722fb1948dd9d0e3362b9</MD5>
-</FILE>
-
-<FILE Name="&plugin;/packages/zfs-0.6.5.3-unRAID6.1.3.x86_64.tgz">
-<URL>&repo;/packages/zfs-0.6.5.3-unRAID6.1.3.x86_64.tgz</URL>
-<MD5>33401b97ae99a5f17aef4524bd5122cc</MD5>
-</FILE>
-
-
-<!-- Packages for 6.1.2  -->
-
-<FILE Name="&plugin;/packages/spl-0.6.5.1-unRAID6.1.2.x86_64.tgz">
-<URL>&repo;/packages/spl-0.6.5.1-unRAID6.1.2.x86_64.tgz</URL>
-<MD5>644f7c6a682b6b9d607f5a7337205d16</MD5>
-</FILE>
-
-<FILE Name="&plugin;/packages/zfs-0.6.5.1-unRAID6.1.2.x86_64.tgz">
-<URL>&repo;/packages/zfs-0.6.5.1-unRAID6.1.2.x86_64.tgz</URL>
-<MD5>cdefbb81f0de70cdb876a4625abb4c88</MD5>
-</FILE>
 
 <!-- Install package based on kernel  -->
 <FILE Run="/bin/bash">
 <INLINE>
-VERSION=$(uname -a)
 
-#unRAID 6.2.0-beta18
-if [[ $VERSION == *"4.4.4-unRAID"* ]];
-then
-  supported_kernel=true
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/zfs-0.6.5.5-unRAID6.2.0-beta18.x86_64.tgz
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/spl-0.6.5.5-unRAID6.2.0-beta18.x86_64.tgz
+# source unRAID version
+. /etc/unraid-version
 
-#unRAID 6.1.9
-elif [[ $VERSION == *"4.1.18-unRAID"* ]];
-then
-  supported_kernel=true
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/zfs-0.6.5.4-unRAID6.1.9.x86_64.tgz
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/spl-0.6.5.4-unRAID6.1.9.x86_64.tgz
- 
-#unRAID 6.1.8
-elif [[ $VERSION == *"4.1.17-unRAID"* ]];
-then
-  supported_kernel=true
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/zfs-0.6.5.4-unRAID6.1.8.x86_64.tgz
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/spl-0.6.5.4-unRAID6.1.8.x86_64.tgz
+# kernel version
+kernel_version=$(uname -a)
 
-#unRAID 6.1.7
-elif [[ $VERSION == *"4.1.15-unRAID"* ]];
-then
+download_install() {
+  local dest="&plugin;/packages/${1}"
+  local src="&repo;/packages/${1}"
+  local md5=$2
+  mkdir -p "&plugin;/packages"
+  if [ ! -f "${dest}" ]; then
+    curl --location --silent --fail "${src}" --output "${dest}"
+  fi
+  file_md5=$(/usr/bin/md5sum ${dest})
+  if [ "${file_md5:0:32}" != "${md5:0:32}" ]; then
+    echo "Wrong '${1}' package md5 hash."
+    rm "${dest}"
+    exit 1
+  else
+    /sbin/installpkg "$dest"
+
+    #delte old tgz
+    if [[ $kernel_version == *"4.4.4-unRAID"* ]]; then
+      find "&plugin;/packages/"* ! -name "*6.2.0-beta18*" -exec rm {} \;
+    else
+      find "&plugin;/packages/"* ! -name *"$version"* -exec rm {} \;
+  fi
+}
+
+# Version 6.2.0-beta18" (and all usign kernel 4.4.4)
+if [[ $kernel_version == *"4.4.4-unRAID"* ]]; then
+  spl_pkg="spl-0.6.5.5-unRAID6.2.0-beta18.x86_64.tgz"
+  spl_md5="6bab826e24b0c3ccc08b962e8a64058c"
+  zfs_pkg="zfs-0.6.5.5-unRAID6.2.0-beta18.x86_64.tgz"
+  zfs_md5="1ee9e5c1d85155ef87138aaee78aefb6"
   supported_kernel=true
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/zfs-0.6.5.4-unRAID6.1.7.x86_64.tgz
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/spl-0.6.5.4-unRAID6.1.7.x86_64.tgz
- 
-#unRAID 6.1.4 - 6.1.6
-elif [[ $VERSION == *"4.1.13-unRAID"* ]];
-then
+
+elif [ "$version" == "6.1.9" ]; then
+  spl_pkg="spl-0.6.5.4-unRAID6.1.9.x86_64.tgz"
+  spl_md5="ef09a51f6fcc069ad4897b5e06088d00"
+  zfs_pkg="zfs-0.6.5.4-unRAID6.1.9.x86_64.tgz"
+  zfs_md5="74ee8f3698cd6f64839bcdf09abe5534"
   supported_kernel=true
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/spl-0.6.5.3-unRAID6.1.4.x86_64.tgz
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/zfs-0.6.5.3-unRAID6.1.4.x86_64.tgz
-  
-#unRAID 6.1.3
-elif [[ $VERSION == *"4.1.7-unRAID"* ]];
-then
+
+elif [ "$version" == "6.1.8" ]; then
+  spl_pkg="spl-0.6.5.4-unRAID6.1.8.x86_64.tgz"
+  spl_md5="3ef7a7eb63bac07475dc7e9eee5132c5"
+  zfs_pkg="zfs-0.6.5.4-unRAID6.1.8.x86_64.tgz"
+  zfs_md5="ae2c5bd933f1376b52a73a07862db2bc"
   supported_kernel=true
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/spl-0.6.5.1-unRAID6.1.3.x86_64.tgz
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/zfs-0.6.5.1-unRAID6.1.3.x86_64.tgz
- 
-#unRAID 6.1.2
-elif [[ $VERSION == *"4.1.5-unRAID"* ]];
-then
+
+elif [ "$version" == "6.1.7" ]; then
+  spl_pkg="spl-0.6.5.4-unRAID6.1.7.x86_64.tgz"
+  spl_md5="288b0b4c242fe947f41a2a4a1f731982"
+  zfs_pkg="zfs-0.6.5.4-unRAID.1.7.x86_64.tgz"
+  zfs_md5="57e386538e4726dd222c8bd682975705"
   supported_kernel=true
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/spl-0.6.5.1-unRAID6.1.2.x86_64.tgz
-  /sbin/installpkg /boot/config/plugins/unRAID6-ZFS/packages/zfs-0.6.5.1-unRAID6.1.2.x86_64.tgz
- 
+
+elif [ "$version" == "6.1.5" ]; then
+  spl_pkg="spl-0.6.5.3-unRAID6.1.4.x86_64.tgz"
+  spl_md5="41700aaec22f70d2ae257544d6f53695"
+  zfs_pkg="zfs-0.6.5.3-unRAID6.1.4.x86_64.tgz"
+  zfs_md5="31b8ee8c406f211a78c7dbf56ba2609e"
+  supported_kernel=true
+
+elif [ "$version" == "6.1.6" ]; then
+  spl_pkg="spl-0.6.5.3-unRAID6.1.4.x86_64.tgz"
+  spl_md5="41700aaec22f70d2ae257544d6f53695"
+  zfs_pkg="zfs-0.6.5.3-unRAID6.1.4.x86_64.tgz"
+  zfs_md5="31b8ee8c406f211a78c7dbf56ba2609e"
+  supported_kernel=true
+
+elif [ "$version" == "6.1.4" ]; then
+  spl_pkg="spl-0.6.5.3-unRAID6.1.4.x86_64.tgz"
+  spl_md5="41700aaec22f70d2ae257544d6f53695"
+  zfs_pkg="zfs-0.6.5.3-unRAID6.1.4.x86_64.tgz"
+  zfs_md5="31b8ee8c406f211a78c7dbf56ba2609e"
+  supported_kernel=true
+
+elif [ "$version" == "6.1.3" ]; then
+  spl_pkg="spl-0.6.5.3-unRAID6.1.3.x86_64.tgz"
+  spl_md5="8b0c880280b722fb1948dd9d0e3362b9"
+  zfs_pkg="zfs-0.6.5.3-unRAID6.1.3.x86_64.tgz"
+  zfs_md5="33401b97ae99a5f17aef4524bd5122cc"
+  supported_kernel=true
+
+elif [ "$version" == "6.1.2" ]; then
+  spl_pkg="spl-0.6.5.1-unRAID6.1.2.x86_64.tgz"
+  spl_md5="644f7c6a682b6b9d607f5a7337205d16"
+  zfs_pkg="zfs-0.6.5.1-unRAID6.1.2.x86_64.tgz"
+  zfs_md5="cdefbb81f0de70cdb876a4625abb4c88"
+  supported_kernel=true
+
 else
   echo ""
   echo "********************************************************************"
@@ -356,8 +316,11 @@ else
   echo ""
   /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: 
 unRAID 6.1.2 - 6.2.0-beta18" -i "alert"
+  exit 1
 fi
 
+download_install "${spl_pkg}" "${spl_md5}"
+download_install "${zfs_pkg}" "${zfs_md5}"
 
 if [ "$supported_kernel" = true ] ; then
   echo "Loading ZFS modules and importing pools (this could take some time....)"
