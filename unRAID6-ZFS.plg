@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "0.2.4">
+  <!ENTITY version   "0.2.5">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -21,7 +21,7 @@
 <CHANGES>
 
 ###2016.03.21
-- remove support for 6.1.12 & 6.1.13
+- remove support for 6.1.12 - 6.1.13
 
 ###2016.03.21
 - Update to 6.2.0-beta19 (kernel 4.4.5)
