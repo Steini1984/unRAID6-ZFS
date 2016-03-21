@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "0.2.3">
+  <!ENTITY version   "0.2.4">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -20,7 +20,10 @@
 
 <CHANGES>
 
-###2016.03.12
+###2016.03.21
+- remove support for 6.1.12 & 6.1.13
+
+###2016.03.21
 - Update to 6.2.0-beta19 (kernel 4.4.5)
 
 ###2016.03.12
@@ -247,7 +250,7 @@ download_install() {
   fi
 }
 
-# Version 6.2.0-beta19" (and all usign kernel 4.4.5)
+# Version 6.2.0-beta19" (and all using kernel 4.4.5)
 if [[ $kernel_version == *"4.4.5-unRAID"* ]]; then
   spl_pkg="spl-0.6.5.5-unRAID6.2.0-beta19.x86_64.tgz"
   spl_md5="6f77ca8edc29ac11a31e29ca3b3ebef4"
@@ -305,29 +308,15 @@ elif [ "$version" == "6.1.4" ]; then
   zfs_md5="31b8ee8c406f211a78c7dbf56ba2609e"
   supported_kernel=true
 
-elif [ "$version" == "6.1.3" ]; then
-  spl_pkg="spl-0.6.5.3-unRAID6.1.3.x86_64.tgz"
-  spl_md5="8b0c880280b722fb1948dd9d0e3362b9"
-  zfs_pkg="zfs-0.6.5.3-unRAID6.1.3.x86_64.tgz"
-  zfs_md5="33401b97ae99a5f17aef4524bd5122cc"
-  supported_kernel=true
-
-elif [ "$version" == "6.1.2" ]; then
-  spl_pkg="spl-0.6.5.1-unRAID6.1.2.x86_64.tgz"
-  spl_md5="644f7c6a682b6b9d607f5a7337205d16"
-  zfs_pkg="zfs-0.6.5.1-unRAID6.1.2.x86_64.tgz"
-  zfs_md5="cdefbb81f0de70cdb876a4625abb4c88"
-  supported_kernel=true
-
 else
   echo ""
   echo "********************************************************************"
   echo "Unsupported kernel detected! This version of OpenZFS only works for"
-  echo "unRAID version 6.1.2 - 6.2.0-beta19"
+  echo "unRAID version 6.1.4 - 6.2.0-beta19"
   echo "********************************************************************"
   echo ""
   /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: 
-unRAID 6.1.2 - 6.2.0-beta19" -i "alert"
+unRAID 6.1.14 - 6.2.0-beta19" -i "alert"
   exit 1
 fi
 
