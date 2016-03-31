@@ -256,7 +256,7 @@ download_install() {
 }
 
 # Version 6.2.0-beta20" (and all using kernel 4.4.6)
-if [[ $kernel_version == *"4.4.5-unRAID"* ]]; then
+if [[ $kernel_version == *"4.4.6-unRAID"* ]]; then
   spl_pkg="spl-0.6.5.6-unRAID6.2.0-beta20.x86_64.tgz"
   spl_md5="519c531fcfee14c7a13e68fb0aec58cb"
   zfs_pkg="zfs-0.6.5.6-unRAID6.2.0-beta20.x86_64.tgz"
