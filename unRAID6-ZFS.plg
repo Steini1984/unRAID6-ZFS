@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "0.2.6">
+  <!ENTITY version   "0.2.7">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -31,6 +31,9 @@
 ###2016.03.21
 - remove support for 6.1.2 - 6.1.3
 
+###2016.03.21		
+- Update to 6.2.0-beta19 (kernel 4.4.5)
+ 
 ###2016.03.12
 - Only download needed tgz (Thanks gfjardim)
 - Remove old tgz
