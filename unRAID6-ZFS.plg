@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "0.2.7">
+  <!ENTITY version   "0.3.0">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -19,6 +19,11 @@
 
 
 <CHANGES>
+
+###2016.06.10
+- Updated to 6.2.0-beta22 (kernel 4.4.13)
+- Remove support for 6.1.7
+- Update to spl-0.6.5.7 / zfs-0.6.5.7
 
 ###2016.04.06
 - Updated to 6.2.0-beta21 (kernel 4.4.6)
@@ -85,7 +90,7 @@ The native Linux kernel port of the ZFS filesystem.
 
 Allows you to use ZFS format on non Array disks.
 
-* ONLY SUPPORTED ON unRAID 6.1.7 - 6.2.0-beta21 *
+* ONLY SUPPORTED ON unRAID 6.1.8 - 6.2.0-beta22 *
 
 </INLINE>
 </FILE>
@@ -258,8 +263,16 @@ download_install() {
   fi
 }
 
+# Version 6.2.0-beta22 (and all using kernel 4.4.13)
+if [[ $kernel_version == *"4.4.13-unRAID"* ]]; then
+  spl_pkg="spl-0.6.5.7-unRAID6.2.0-beta22.x86_64.tgz"
+  spl_md5="928b1c6bfd24d3f5ada6e549abfadd1c"
+  zfs_pkg="zfs-0.6.5.7-unRAID6.2.0-beta22.x86_64.tgz"
+  zfs_md5="6ea19b53ef45f3582fb4d8761886cde3"
+  supported_kernel=true
+
 # Version 6.2.0-beta20 and beta21 (and all using kernel 4.4.6)
-if [[ $kernel_version == *"4.4.6-unRAID"* ]]; then
+elif [[ $kernel_version == *"4.4.6-unRAID"* ]]; then
   spl_pkg="spl-0.6.5.6-unRAID6.2.0-beta20.x86_64.tgz"
   spl_md5="519c531fcfee14c7a13e68fb0aec58cb"
   zfs_pkg="zfs-0.6.5.6-unRAID6.2.0-beta20.x86_64.tgz"
@@ -295,22 +308,15 @@ elif [ "$version" == "6.1.8" ]; then
   zfs_md5="ae2c5bd933f1376b52a73a07862db2bc"
   supported_kernel=true
 
-elif [ "$version" == "6.1.7" ]; then
-  spl_pkg="spl-0.6.5.4-unRAID6.1.7.x86_64.tgz"
-  spl_md5="288b0b4c242fe947f41a2a4a1f731982"
-  zfs_pkg="zfs-0.6.5.4-unRAID.1.7.x86_64.tgz"
-  zfs_md5="57e386538e4726dd222c8bd682975705"
-  supported_kernel=true
-
 else
   echo ""
   echo "********************************************************************"
   echo "Unsupported kernel detected! This version of OpenZFS only works for"
-  echo "unRAID version 6.1.7 - 6.2.0-beta21"
+  echo "unRAID version 6.1.8 - 6.2.0-beta22"
   echo "********************************************************************"
   echo ""
   /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: 
-unRAID 6.1.7 - 6.2.0-beta21" -i "alert"
+unRAID 6.1.8 - 6.2.0-beta22" -i "alert"
   exit 1
 fi
 
