@@ -22,7 +22,6 @@
 
 ###2016.07.12
 - Updated to 6.2.0-rc1 (kernel 4.4.14)
-- Remove support for 6.1.8
 
 ###2016.06.14
 - Updated to 6.2.0-beta23 (kernel 4.4.13)
@@ -316,15 +315,22 @@ elif [ "$version" == "6.1.9" ]; then
   zfs_md5="74ee8f3698cd6f64839bcdf09abe5534"
   supported_kernel=true
 
+elif [ "$version" == "6.1.8" ]; then
+  spl_pkg="spl-0.6.5.4-unRAID6.1.8.x86_64.tgz"
+  spl_md5="3ef7a7eb63bac07475dc7e9eee5132c5"
+  zfs_pkg="zfs-0.6.5.4-unRAID6.1.8.x86_64.tgz"
+  zfs_md5="ae2c5bd933f1376b52a73a07862db2bc"
+  supported_kernel=true
+
 else
   echo ""
   echo "********************************************************************"
   echo "Unsupported kernel detected! This version of OpenZFS only works for"
-  echo "unRAID version 6.1.9 - 6.2.0-rc1"
+  echo "unRAID version 6.1.8 - 6.2.0-rc1"
   echo "********************************************************************"
   echo ""
   /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: 
-unRAID 6.1.9 - 6.2.0-rc1" -i "alert"
+unRAID 6.1.8 - 6.2.0-rc1" -i "alert"
   exit 1
 fi
 
