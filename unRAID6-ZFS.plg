@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "0.3.4">
+  <!ENTITY version   "0.3.5">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -16,7 +16,6 @@
      version="&version;"
      pluginURL="&pluginURL;"
 >
-
 
 <CHANGES>
 
@@ -283,8 +282,8 @@ if [[ $kernel_version == *"4.4.18-unRAID"* ]]; then
   zfs_md5="ccff7610b9849c21c356a80c7490915e"
   supported_kernel=true
 
-# Version 6.2.0-rc2 & rc3                              
-if [[ $kernel_version == *"4.4.15-unRAID"* ]]; then
+# Version 6.2.0-rc2 and rc3                              
+elif [[ $kernel_version == *"4.4.15-unRAID"* ]]; then
   spl_pkg="spl-0.6.5.7-unRAID6.2.0-rc2.x86_64.tgz"
   spl_md5="6b49ce771f44dee42c7604a12cc1d201"
   zfs_pkg="zfs-0.6.5.7-unRAID6.2.0-rc2.x86_64.tgz"
@@ -328,7 +327,6 @@ elif [ "$version" == "6.2.0-beta18" ]; then
   zfs_pkg="zfs-0.6.5.5-unRAID6.2.0-beta18.x86_64.tgz"
   zfs_md5="1ee9e5c1d85155ef87138aaee78aefb6"
   supported_kernel=true
-
 
 elif [ "$version" == "6.1.9" ]; then
   spl_pkg="spl-0.6.5.4-unRAID6.1.9.x86_64.tgz"
