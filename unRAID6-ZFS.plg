@@ -276,7 +276,7 @@ download_install() {
 
     #delte old tgz
     if [[ $kernel_version == *"4.4.19-unRAID"* ]]; then
-      find "&plugin;/packages/"* ! -name "*6.2.0-rc5*" -exec rm {} \;
+      find "&plugin;/packages/"* ! -name "*6.2.0*" -exec rm {} \;
     else
       find "&plugin;/packages/"* ! -name *"$version"* -exec rm {} \;
     fi
@@ -285,9 +285,9 @@ download_install() {
 
 # Version 6.2.0-rc5 and 6.2.0-stable                              
 if [[ $kernel_version == *"4.4.19-unRAID"* ]]; then
-  spl_pkg="spl-0.6.5.8-unRAID6.2.0-rc5.x86_64.tgz"
+  spl_pkg="spl-0.6.5.8-unRAID6.2.0.x86_64.tgz"
   spl_md5="565b728f335be03fdeb2bba981601b7d"
-  zfs_pkg="zfs-0.6.5.8-unRAID6.2.0-rc5.x86_64.tgz"
+  zfs_pkg="zfs-0.6.5.8-unRAID6.2.0.x86_64.tgz"
   zfs_md5="78498257ef62b8e75d063f76b01f7339"
   supported_kernel=true
 
