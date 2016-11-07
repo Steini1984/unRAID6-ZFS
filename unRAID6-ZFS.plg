@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "0.4.4">
+  <!ENTITY version   "0.4.6">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -21,6 +21,7 @@
 
 ###2016.11.07
 - Updated to 6.2.4 (kernel 4.4.30)
+- Removed all 6.2 rc versions
 
 ###2016.10.25
 - Updated to 6.2.2 (kernel 4.4.26)
@@ -306,9 +307,9 @@ if [[ $kernel_version == *"4.8.4-unRAID"* ]]; then
 
 # Version 6.2.4
 elif [[ $kernel_version == *"4.4.30-unRAID"* ]]; then
-  spl_pkg="spl-0.6.5.8-unRAID6.2.2.x86_64.tgz"
+  spl_pkg="spl-0.6.5.8-unRAID6.2.4.x86_64.tgz"
   spl_md5="5975f5341df86a7c835335f263e2da02"
-  zfs_pkg="zfs-0.6.5.8-unRAID6.2.2.x86_64.tgz"
+  zfs_pkg="zfs-0.6.5.8-unRAID6.2.4.x86_64.tgz"
   zfs_md5="9889cb06a0cc760fd8c53a1cf3ac5b6f"
   supported_kernel=true
 
@@ -329,36 +330,11 @@ elif [[ $kernel_version == *"4.4.23-unRAID"* ]]; then
   supported_kernel=true
 
 # Version 6.2.0-rc5 and 6.2.0-stable                              
-
 elif [[ $kernel_version == *"4.4.19-unRAID"* ]]; then
   spl_pkg="spl-0.6.5.8-unRAID6.2.0.x86_64.tgz"
   spl_md5="565b728f335be03fdeb2bba981601b7d"
   zfs_pkg="zfs-0.6.5.8-unRAID6.2.0.x86_64.tgz"
   zfs_md5="78498257ef62b8e75d063f76b01f7339"
-  supported_kernel=true
-
-# Version 6.2.0-rc4                              
-elif [[ $kernel_version == *"4.4.18-unRAID"* ]]; then
-  spl_pkg="spl-0.6.5.7-unRAID6.2.0-rc4.x86_64.tgz"
-  spl_md5="d42bd1f57a7618e64cff3d29cbe9aedb"
-  zfs_pkg="zfs-0.6.5.7-unRAID6.2.0-rc4.x86_64.tgz"
-  zfs_md5="ccff7610b9849c21c356a80c7490915e"
-  supported_kernel=true
-
-# Version 6.2.0-rc2 and rc3                              
-elif [[ $kernel_version == *"4.4.15-unRAID"* ]]; then
-  spl_pkg="spl-0.6.5.7-unRAID6.2.0-rc2.x86_64.tgz"
-  spl_md5="6b49ce771f44dee42c7604a12cc1d201"
-  zfs_pkg="zfs-0.6.5.7-unRAID6.2.0-rc2.x86_64.tgz"
-  zfs_md5="cec0536680b9eb26e86d06ca76d620d0"
-  supported_kernel=true
-
-# Version 6.2.0-rc1
-elif [[ $kernel_version == *"4.4.14-unRAID"* ]]; then
-  spl_pkg="spl-0.6.5.7-unRAID6.2.0-rc1.x86_64.tgz"
-  spl_md5="f1b3e9e3aa1473385a1dfef160dd3fcd"
-  zfs_pkg="zfs-0.6.5.7-unRAID6.2.0-rc1.x86_64.tgz"
-  zfs_md5="87c0da11780e50ff25111b5c52f8b5d7"
   supported_kernel=true
 
 elif [ "$version" == "6.1.9" ]; then
