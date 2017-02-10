@@ -315,7 +315,7 @@ if [[ $kernel_version == *"4.9.8-unRAID"* ]]; then
   supported_kernel=true
 
 # Version 6.3
-if [[ $kernel_version == *"4.9.7-unRAID"* ]]; then
+elif [[ $kernel_version == *"4.9.7-unRAID"* ]]; then
   spl_pkg="spl-0.6.5.9-unRAID6.3.x86_64.tgz"
   spl_md5="28384f5fa154e83c3cea12ab41233891"
   zfs_pkg="zfs-0.6.5.9-unRAID6.3.x86_64.tgz"
@@ -366,8 +366,7 @@ else
   echo "Unsupported kernel detected! This version of OpenZFS only works for"
   echo "unRAID version 6.1.9 - 6.3.1"
   echo ""
-  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: 
-unRAID 6.1.9 - 6.3.1" -i "alert"
+  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: unRAID 6.1.9 - 6.3.1" -i "alert"
   exit 1
 fi
 
