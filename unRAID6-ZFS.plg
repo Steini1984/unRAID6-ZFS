@@ -308,9 +308,9 @@ download_install() {
 
 # Version 6.3.1
 if [[ $kernel_version == *"4.9.8-unRAID"* ]]; then
-  spl_pkg="spl-0.6.5.9-unRAID6.3.x86_64.tgz"
+  spl_pkg="spl-0.6.5.9-unRAID6.3.1.x86_64.tgz"
   spl_md5="bd220514fe5f29edc1641b94363fae28"
-  zfs_pkg="zfs-0.6.5.9-unRAID6.3.x86_64.tgz"
+  zfs_pkg="zfs-0.6.5.9-unRAID6.3.1.x86_64.tgz"
   zfs_md5="8a11736c8fddcd12c4af915ffd88783c"
   supported_kernel=true
 
@@ -399,3 +399,4 @@ echo "OpenZFS plugin uninstalled. ZFS will be active until next reboot "
 </INLINE>
 </FILE>
 </PLUGIN>
+
