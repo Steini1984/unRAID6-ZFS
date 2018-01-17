@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "0.6.0">
+  <!ENTITY version   "0.6.4">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -18,6 +18,11 @@
 >
 
 <CHANGES>
+
+
+###2017.10.11
+- Updated for unRAID 6.4 (big thanks to rinseaid)
+- Updated to zfs and spl 0.7.5 (kernel 4.14.13)
 
 ###2017.10.11
 - Updated to zfs and spl 0.7.2 (kernel 4.9.30)
@@ -151,7 +156,7 @@ The native Linux kernel port of the ZFS filesystem.
 
 Allows you to use ZFS format on non Array disks.
 
-* ONLY SUPPORTED ON unRAID 6.2.2 - 6.3.5  *
+* ONLY SUPPORTED ON unRAID 6.2.2 - 6.4.0  *
 
 </INLINE>
 </FILE>
@@ -324,8 +329,37 @@ download_install() {
   fi
 }
 
+download_install_modules() {
+  local dest="&plugin;/packages/${1}"
+  local src="&repo;/packages/${1}"
+  local md5=$2
+  mkdir -p "&plugin;/packages"
+  if [ ! -f "${dest}" ]; then
+    curl --location --silent --fail "${src}" --output "${dest}"
+  fi
+  file_md5=$(/usr/bin/md5sum ${dest})
+  if [ "${file_md5:0:32}" != "${md5:0:32}" ]; then
+    echo "Wrong '${1}' package md5 hash."
+    rm "${dest}"
+    exit 1
+  else
+    mount "$dest" /lib/modules
+  fi
+}
+
+
+# Version 6.4.0
+if [[ $kernel_version == *"4.14.13-unRAID"* ]]; then
+  spl_pkg="spl-6.4.0.tgz"
+  spl_md5="230ccc228911a9c3a2e488fd6d73fd99"
+  zfs_pkg="zfs-6.4.0.tgz"
+  zfs_md5="135fd2fb3addecdf4cd6526cc2bc6c0b"
+  bzmodules="bzmodules-zfs-6.4.0"
+  bzmodules_md5="836857234a42c6f75767fca490f050d9"
+  supported_kernel=true
+  
 # Version 6.3.5
-if [[ $kernel_version == *"4.9.30-unRAID"* ]]; then
+elif [[ $kernel_version == *"4.9.30-unRAID"* ]]; then
   spl_pkg="spl-0.7.2-unRAID6.3.5.x86_64.tgz"
   spl_md5="f08d4375bd449906fd61356117de32d3"
   zfs_pkg="zfs-0.7.2-unRAID6.3.5.x86_64.tgz"
@@ -392,20 +426,28 @@ elif [[ $kernel_version == *"4.4.26-unRAID"* ]]; then
 else
   echo ""
   echo "Unsupported kernel detected! This version of OpenZFS only works for"
-  echo "unRAID version 6.2.2 - 6.3.5"
+  echo "unRAID version 6.2.2 - 6.4.0"
   echo ""
-  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: unRAID 6.2.2 - 6.3.4" -i "alert"
+  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: unRAID 6.2.2 - 6.4.0" -i "alert"
   exit 1
 fi
 
-download_install "${spl_pkg}" "${spl_md5}"
-download_install "${zfs_pkg}" "${zfs_md5}"
 
 if [ "$supported_kernel" = true ] ; then
+  download_install "${spl_pkg}" "${spl_md5}"
+  download_install "${zfs_pkg}" "${zfs_md5}"
+
+  if [ -z "$bzmodules" ]
+  then
+        echo "Pre 6.4 installation"
+  else
+        echo "Downloading and remounting modules"
+        download_install_modules "${bzmodules}" "${bzmodules_md5}"
+  fi
+
   echo "Loading ZFS modules and importing pools (this could take some time....)"
-  echo "** A reboot is required to reload new versions of zfs **"
-  depmod 
-  modprobe zfs 
+  depmod >> /dev/null
+  modprobe zfs  >> /dev/null
   zpool import -a >> /dev/null
   echo "Finished"
 fi
@@ -428,4 +470,3 @@ echo "OpenZFS plugin uninstalled. ZFS will be active until next reboot "
 </INLINE>
 </FILE>
 </PLUGIN>
-
