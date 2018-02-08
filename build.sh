@@ -10,41 +10,45 @@
 # For up to date builds you need to update the links to the sources
 #
 
-
+#VARIABLES
+zfs_version=0.7.6
 D="$(dirname "$(readlink -f ${BASH_SOURCE[0]})")"
 
 URLS="
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/d/gcc-4.8.2-x86_64-1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/d/gcc-g++-4.8.2-x86_64-1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/patches/packages/glibc-2.17-x86_64-11_slack14.1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/d/binutils-2.23.52.0.1-x86_64-2.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/d/make-3.82-x86_64-4.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/a/cxxlibs-6.0.18-x86_64-1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/d/perl-5.18.1-x86_64-1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/a/patch-2.7-x86_64-2.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/l/mpfr-3.1.2-x86_64-1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/ap/bc-1.06.95-x86_64-2.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/patches/packages/linux-3.10.104/kernel-headers-3.10.104-x86-1_slack14.1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/l/libmpc-0.8.2-x86_64-2.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/l/ncurses-5.9-x86_64-2.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/a/cpio-2.11-x86_64-2.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/d/pkg-config-0.25-x86_64-1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/d/autoconf-2.69-noarch-1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/d/automake-1.11.5-noarch-1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/l/libmpc-0.8.2-x86_64-2.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/ap/sqlite-3.7.17-x86_64-1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/d/pkg-config-0.25-x86_64-1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/d/automake-1.11.5-noarch-1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/d/autoconf-2.69-noarch-1.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/d/libtool-2.4.2-x86_64-2.txz
-http://mirrors.slackware.com/slackware/slackware64-14.1/slackware64/d/m4-1.4.17-x86_64-1.txz
-"
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/gcc-5.3.0-x86_64-3.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/gcc-g++-5.3.0-x86_64-3.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/glibc-2.27-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/binutils-2.26-x86_64-3.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/make-4.1-x86_64-2.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/a/aaa_elflibs-14.2-x86_64-23.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/perl-5.22.2-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/a/patch-2.7.5-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/l/mpfr-3.1.4-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/ap/bc-1.06.95-x86_64-3.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/l/libmpc-1.0.3-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/l/ncurses-5.9-x86_64-4.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/a/cpio-2.12-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/pkg-config-0.29.1-x86_64-2.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/autoconf-2.69-noarch-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/automake-1.15-noarch-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/ap/sqlite-3.13.0-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/libtool-2.4.6-x86_64-4.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/m4-1.4.17-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/guile-2.0.11-x86_64-2.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/l/gc-7.4.2-x86_64-3.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/l/libunistring-0.9.3-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/l/elfutils-0.163-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/a/attr-2.4.47-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/a/util-linux-2.27.1-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/patches/packages/libtirpc-1.0.2-x86_64-1_slack14.2.txz
+https://mirrors.slackware.com/slackware/slackware64-14.2/patches/packages/squashfs-tools-4.3-x86_64-2_slack14.2.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/kernel-headers-4.14.17-x86-1.txz"
 
 SOURCES="
 https://sourceforge.net/projects/libuuid/files/libuuid-1.0.3.tar.gz
 http://www.zlib.net/zlib-1.2.11.tar.gz
-https://github.com/zfsonlinux/zfs/releases/download/zfs-0.6.5.9/spl-0.6.5.9.tar.gz
-https://github.com/zfsonlinux/zfs/releases/download/zfs-0.6.5.9/zfs-0.6.5.9.tar.gz
+https://github.com/zfsonlinux/zfs/releases/download/zfs-$zfs_version/spl-$zfs_version.tar.gz
+https://github.com/zfsonlinux/zfs/releases/download/zfs-$zfs_version/zfs-$zfs_version.tar.gz
 "
 
 ask() {
@@ -153,6 +157,7 @@ do_compile() {
   done
 
   #compile the sources
+
   cd $D/sources/libuu*/
   ./configure
   make
@@ -168,28 +173,46 @@ do_compile() {
   make
   make install DESTDIR=$(pwd)/PACKAGE
   cd $(pwd)/PACKAGE
-  makepkg -l y -c n $D/spl-$unRAID_version.tgz
-  installpkg $D/spl-$unRAID_version.tgz
+  makepkg -l y -c n $D/spl-$zfs_version-unRAID-$unRAID_version.x86_64.tgz
+  installpkg $D/spl-$zfs_version-unRAID-$unRAID_version.x86_64.tgz
   #load module
   depmod
   modprobe spl
+
+  md5sum $D/spl-$zfs_version-unRAID-$unRAID_version.x86_64.tgz > $D/spl-$zfs_version-unRAID-$unRAID_version.x86_64.tgz.md5
 
   cd $D/sources/zfs*/
   ./configure --prefix=/usr
   make
   make install DESTDIR=$(pwd)/PACKAGE
   cd $(pwd)/PACKAGE
-  makepkg -l y -c n $D/zfs-$unRAID_version.tgz
-  installpkg $D/zfs-$unRAID_version.tgz
+  makepkg -l y -c n $D/zfs-$zfs_version-unRAID-$unRAID_version.x86_64.tgz
+  installpkg $D/zfs-$zfs_version-unRAID-$unRAID_version.x86_64.tgz
   #load module
   depmod
   modprobe zfs
-}
+  #Copy to destination
+  md5sum $D/zfs-$zfs_version-unRAID-$unRAID_version.x86_64.tgz > $D/zfs-$zfs_version-unRAID-$unRAID_version.x86_64.tgz.md5
 
+}
 
 do_cleanup(){
   rm -rf $D/bzroot $D/kernel $D/packages $D/linux-*.tar.xz $D/sources
 }
+
+#Change to current directory
+cd $D
+
+##Unmount bzmodules and make rw
+if mount | grep /lib/modules > /dev/null; 
+then
+      echo "Remounting modules"
+      cp -r /lib/modules /tmp
+      umount -l /lib/modules/
+      rm -rf  /lib/modules
+      mv -f  /tmp/modules /lib
+fi
+
 
 if ask "1) Do you want to clean directories?" N ; then do_cleanup; fi
 
@@ -200,3 +223,6 @@ if ask "3) Do you want to download and extract the Linux kernel?" $([[ -f $D/ker
 if ask "3.1) Do you want to install Linux kernel modules?" N ;then do_install_kernel_modules; fi
 
 if ask "4) Do you want to compile ZFS?" N ; then do_compile; fi
+
+##Return to original directory
+cd $D
