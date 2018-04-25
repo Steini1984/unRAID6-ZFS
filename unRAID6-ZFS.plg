@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "0.6.5.0">
+  <!ENTITY version   "0.6.5.1">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -18,6 +18,10 @@
 >
 
 <CHANGES>
+
+###2018.04.25
+- Updated for unRAID 6.5.1 (kernel 4.14.35)
+- Updated to zfs and spl 0.7.8
 
 ###2018.03.14
 - Updated for unRAID 6.5.0 (kernel 4.14.26)
@@ -164,7 +168,7 @@ The native Linux kernel port of the ZFS filesystem.
 
 Allows you to use ZFS format on non Array disks.
 
-* ONLY SUPPORTED ON unRAID 6.3.1 - 6.5.0  *
+* ONLY SUPPORTED ON unRAID 6.3.1 - 6.5.1  *
 
 </INLINE>
 </FILE>
@@ -336,7 +340,12 @@ download_install() {
   fi
 }
 
-if [[ $kernel_version == *"4.14.26-unRAID"* ]]; then #6.5.0
+if [[ $kernel_version == *"4.14.35-unRAID"* ]]; then #6.5.1
+  spl_pkg="spl-0.7.8-unRAID-6.5.1.x86_64.tgz"
+  zfs_pkg="zfs-0.7.8-unRAID-6.5.1.x86_64.tgz"
+  supported_kernel=true
+
+elif [[ $kernel_version == *"4.14.26-unRAID"* ]]; then #6.5.0
   spl_pkg="spl-0.7.6-unRAID-6.5.0.x86_64.tgz"
   zfs_pkg="zfs-0.7.6-unRAID-6.5.0.x86_64.tgz"
   supported_kernel=true
@@ -381,7 +390,7 @@ else
   echo ""
   echo "Unsupported kernel detected!" 
   echo ""
-  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: unRAID 6.3.1 - 6.5.0" -i "alert"
+  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: unRAID 6.3.1 - 6.5.1" -i "alert"
   exit 1
 fi
 
