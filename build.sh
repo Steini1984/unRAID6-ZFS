@@ -11,13 +11,14 @@
 #
 
 #VARIABLES
-zfs_version=0.7.6
+zfs_version=0.7.11
 D="$(dirname "$(readlink -f ${BASH_SOURCE[0]})")"
+[[ $(uname -r) =~ ([0-9.]*) ]] &&  KERNEL=${BASH_REMATCH[1]} || return 1
 
 URLS="
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/glibc-2.27-x86_64-4.txz
 https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/gcc-5.3.0-x86_64-3.txz
 https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/gcc-g++-5.3.0-x86_64-3.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/glibc-2.27-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/binutils-2.26-x86_64-3.txz
 https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/d/make-4.1-x86_64-2.txz
 https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/a/aaa_elflibs-14.2-x86_64-23.txz
@@ -42,7 +43,8 @@ https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/a/attr-2.4.
 https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/a/util-linux-2.27.1-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-14.2/patches/packages/libtirpc-1.0.2-x86_64-1_slack14.2.txz
 https://mirrors.slackware.com/slackware/slackware64-14.2/patches/packages/squashfs-tools-4.3-x86_64-2_slack14.2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/kernel-headers-4.14.17-x86-1.txz"
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/kernel-headers-4.14.70-x86-1.txz
+"
 
 SOURCES="
 https://sourceforge.net/projects/libuuid/files/libuuid-1.0.3.tar.gz
@@ -124,6 +126,11 @@ do_extract_kernel(){
   done
 
   make oldconfig
+}
+
+do_compile_kernel(){
+  cd $D/kernel
+  make -j $(cat /proc/cpuinfo | grep -m 1 -Po "cpu cores.*?\K\d")
 }
 
 do_install_kernel_modules () {
@@ -220,7 +227,9 @@ if ask "2) Do you want to install build dependencies?" $([[ -f /usr/bin/make ]] 
 
 if ask "3) Do you want to download and extract the Linux kernel?" $([[ -f $D/kernel/.config ]] && echo N||echo Y;) ;then do_extract_kernel;fi
 
-if ask "3.1) Do you want to install Linux kernel modules?" N ;then do_install_kernel_modules; fi
+if ask "3.1) Do you want to compile the Linux kernel?" N ;then do_compile_kernel; fi
+
+if ask "3.2) Do you want to install Linux kernel modules?" N ;then do_install_kernel_modules; fi
 
 if ask "4) Do you want to compile ZFS?" N ; then do_compile; fi
 
