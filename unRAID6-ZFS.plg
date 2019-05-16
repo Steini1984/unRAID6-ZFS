@@ -370,7 +370,7 @@ download_install() {
   fi
 }
 
-if [[ $kernel_version == *"4.19.41-unRAID"* ]]; then #6.7.0
+if [[ $kernel_version == *"4.19.41-Unraid"* ]]; then #6.7.0
   spl_pkg="spl-0.7.13-unRAID-6.7.0.x86_64.tgz"
   zfs_pkg="zfs-0.7.13-unRAID-6.7.0.x86_64.tgz"
   supported_kernel=true
