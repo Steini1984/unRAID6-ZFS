@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "0.6.6.7">
+  <!ENTITY version   "0.6.7.0">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -18,6 +18,10 @@
 >
 
 <CHANGES>
+
+###2018.12.05
+- Updated for unRAID 6.7.0 (kernel 4.19.41)
+- Updated to spl-0.7.13 / zfs-0.7.13
 
 ###2018.12.05
 - Just a version bump to align with 6.6.7 (same kernel 4.18.20)
@@ -194,7 +198,7 @@ The native Linux kernel port of the ZFS filesystem.
 
 Allows you to use ZFS format on non Array disks.
 
-* ONLY SUPPORTED ON unRAID 6.3.3 - 6.6.7  *
+* ONLY SUPPORTED ON unRAID 6.3.4 - 6.7.0  *
 
 </INLINE>
 </FILE>
@@ -366,7 +370,12 @@ download_install() {
   fi
 }
 
-if [[ $kernel_version == *"4.18.20-unRAID"* ]]; then #6.6.6 or 6.6.7
+if [[ $kernel_version == *"4.19.41-unRAID"* ]]; then #6.7.0
+  spl_pkg="spl-0.7.13-unRAID-6.7.0.x86_64.tgz"
+  zfs_pkg="zfs-0.7.13-unRAID-6.7.0.x86_64.tgz"
+  supported_kernel=true
+
+elif [[ $kernel_version == *"4.18.20-unRAID"* ]]; then #6.6.6 or 6.6.7
   spl_pkg="spl-0.7.12-unRAID-6.6.6.x86_64.tgz"
   zfs_pkg="zfs-0.7.12-unRAID-6.6.6.x86_64.tgz"
   supported_kernel=true
@@ -436,16 +445,11 @@ elif [[ $kernel_version == *"4.9.28-unRAID"* ]]; then #6.3.4
   zfs_pkg="zfs-0.6.5.9-unRAID6.3.4.x86_64.tgz"
   supported_kernel=true
 
-elif [[ $kernel_version == *"4.9.19-unRAID"* ]]; then #6.3.3
-  spl_pkg="spl-0.6.5.9-unRAID6.3.3.x86_64.tgz"
-  zfs_pkg="zfs-0.6.5.9-unRAID6.3.3.x86_64.tgz"
-  supported_kernel=true
-
 else
   echo ""
   echo "Unsupported kernel detected!" 
   echo ""
-  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: unRAID 6.3.3 - 6.6.7" -i "alert"
+  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: unRAID 6.3.4 - 6.7.0" -i "alert"
   exit 1
 fi
 
