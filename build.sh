@@ -11,7 +11,7 @@
 #
 
 #VARIABLES
-zfs_version=0.7.13
+zfs_version=0.8.1
 D="$(dirname "$(readlink -f ${BASH_SOURCE[0]})")"
 [[ $(uname -r) =~ ([0-9.]*) ]] &&  KERNEL=${BASH_REMATCH[1]} || return 1
 
@@ -19,37 +19,40 @@ URLS="
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/libmpc-1.1.0-x86_64-2.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/make-4.2.1-x86_64-4.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/dbus-glib-0.110-x86_64-2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/gcc-9.1.0-x86_64-4.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/gcc-g++-9.1.0-x86_64-4.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/cmake-3.14.3-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/gcc-9.1.0-x86_64-6.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/gcc-g++-9.1.0-x86_64-6.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/cmake-3.14.5-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/pkg-config-0.29.2-x86_64-2.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/autoconf-2.69-noarch-2.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/automake-1.16.1-noarch-2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/kernel-headers-4.19.42-x86-1.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/kernel-headers-4.19.55-x86-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/cpio-2.12-x86_64-2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/guile-2.2.4-x86_64-2.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/guile-2.2.5-x86_64-2.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/gc-8.0.4-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/bison-3.3.2-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/bison-3.4.1-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/binutils-2.32-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/perl-5.28.2-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/perl-5.30.0-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/libtool-2.4.6-x86_64-11.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/m4-1.4.18-x86_64-2.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/aaa_elflibs-15.0-x86_64-8.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/patch-2.7.6-x86_64-3.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/attr-2.4.48-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/util-linux-2.33.2-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/util-linux-2.34-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/ap/bc-1.07.1-x86_64-3.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/ap/sqlite-3.28.0-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/mpfr-4.0.2-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/ncurses-6.1_20190420-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/ncurses-6.1_20190518-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/libunistring-0.9.10-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/elfutils-0.176-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/n/libtirpc-1.1.4-x86_64-1.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/glibc-2.29-x86_64-3.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/python3-3.7.3-x86_64-2.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/n/openssl-1.1.1c-x86_64-1.txz
 "
+
 SOURCES="
 https://sourceforge.net/projects/libuuid/files/libuuid-1.0.3.tar.gz
 http://www.zlib.net/zlib-1.2.11.tar.gz
-https://github.com/zfsonlinux/zfs/releases/download/zfs-$zfs_version/spl-$zfs_version.tar.gz
 https://github.com/zfsonlinux/zfs/releases/download/zfs-$zfs_version/zfs-$zfs_version.tar.gz
 "
 
@@ -175,18 +178,6 @@ do_compile() {
   make
   make install
 
-  cd $D/sources/spl*/
-  ./configure --prefix=/usr
-  make
-  make install DESTDIR=$(pwd)/PACKAGE
-  cd $(pwd)/PACKAGE
-  makepkg -l y -c n $D/spl-$zfs_version-unRAID-$unRAID_version.x86_64.tgz
-  installpkg $D/spl-$zfs_version-unRAID-$unRAID_version.x86_64.tgz
-  #load module
-  depmod
-  modprobe spl
-
-  md5sum $D/spl-$zfs_version-unRAID-$unRAID_version.x86_64.tgz > $D/spl-$zfs_version-unRAID-$unRAID_version.x86_64.tgz.md5
 
   cd $D/sources/zfs*/
   ./configure --prefix=/usr

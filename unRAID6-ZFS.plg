@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "0.6.7.0">
+  <!ENTITY version   "0.6.7.1">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -19,11 +19,16 @@
 
 <CHANGES>
 
-###2018.12.05
+###2019.06.24
+- Updated for unRAID 6.7.1 (kernel 4.19.55)
+- Updated to zfs-0.8.1
+- Removed SPL - The SPL source is now included in the ZFS repository removing the need for separate packages
+
+###2019.05.16
 - Updated for unRAID 6.7.0 (kernel 4.19.41)
 - Updated to spl-0.7.13 / zfs-0.7.13
 
-###2018.12.05
+###2019.03.07
 - Just a version bump to align with 6.6.7 (same kernel 4.18.20)
 
 ###2018.12.05
@@ -198,7 +203,7 @@ The native Linux kernel port of the ZFS filesystem.
 
 Allows you to use ZFS format on non Array disks.
 
-* ONLY SUPPORTED ON unRAID 6.3.4 - 6.7.0  *
+* ONLY SUPPORTED ON unRAID 6.3.4 - 6.7.1  *
 
 </INLINE>
 </FILE>
@@ -370,10 +375,15 @@ download_install() {
   fi
 }
 
-if [[ $kernel_version == *"4.19.41-Unraid"* ]]; then #6.7.0
-  spl_pkg="spl-0.7.13-unRAID-6.7.0.x86_64.tgz"
-  zfs_pkg="zfs-0.7.13-unRAID-6.7.0.x86_64.tgz"
+if [[ $kernel_version == *"4.19.55-Unraid"* ]]; then #6.7.1
+  zfs_pkg="zfs-0.8.1-unRAID-6.7.1.x86_64.tgz"
   supported_kernel=true
+  skip_spl=true
+
+elif [[ $kernel_version == *"4.19.41-Unraid"* ]]; then #6.7.0
+  zfs_pkg="zfs-0.8.0-unRAID-6.7.0.x86_64.tgz"
+  supported_kernel=true
+  skip_spl=true
 
 elif [[ $kernel_version == *"4.18.20-unRAID"* ]]; then #6.6.6 or 6.6.7
   spl_pkg="spl-0.7.12-unRAID-6.6.6.x86_64.tgz"
@@ -449,7 +459,7 @@ else
   echo ""
   echo "Unsupported kernel detected!" 
   echo ""
-  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: unRAID 6.3.4 - 6.7.0" -i "alert"
+  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: unRAID 6.3.4 - 6.7.1" -i "alert"
   exit 1
 fi
 
@@ -463,7 +473,10 @@ if [ "$supported_kernel" = true ] ; then
         mv -f  /tmp/modules /lib
   fi
 
-  download_install "${spl_pkg}"
+  if [ "$skip_spl" != true ] ; then
+      download_install "${spl_pkg}"
+  fi
+
   download_install "${zfs_pkg}"
 
   echo "Loading ZFS modules and importing pools (this could take some time....)"
