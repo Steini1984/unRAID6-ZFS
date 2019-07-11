@@ -25,9 +25,9 @@ https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/cmake-
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/pkg-config-0.29.2-x86_64-2.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/autoconf-2.69-noarch-2.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/automake-1.16.1-noarch-2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/kernel-headers-4.19.55-x86-1.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/kernel-headers-4.19.58-x86-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/cpio-2.12-x86_64-2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/guile-2.2.5-x86_64-2.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/guile-2.2.6-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/gc-8.0.4-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/bison-3.4.1-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/binutils-2.32-x86_64-1.txz
@@ -46,7 +46,7 @@ https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/libuni
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/elfutils-0.176-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/n/libtirpc-1.1.4-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/glibc-2.29-x86_64-3.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/python3-3.7.3-x86_64-2.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/python3-3.7.4-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/n/openssl-1.1.1c-x86_64-1.txz
 "
 
