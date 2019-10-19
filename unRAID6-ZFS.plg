@@ -20,6 +20,9 @@
 <CHANGES>
 
 ###2019.10.12
+- No changes for unRAID 6.8.0-rc3 (kernel 5.3.6)
+
+###2019.10.12
 - Updated for unRAID 6.8.0-rc1 (kernel 5.3.6)
 - Updated to zfs-0.8.2
 
@@ -210,7 +213,7 @@ The native Linux kernel port of the ZFS filesystem.
 
 Allows you to use ZFS format on non Array disks.
 
-* ONLY SUPPORTED ON unRAID 6.3.4 - 6.8.0-rc1  *
+* ONLY SUPPORTED ON unRAID 6.3.4 - 6.8.0-rc3  *
 
 </INLINE>
 </FILE>
@@ -382,7 +385,7 @@ download_install() {
   fi
 }
 
-if [[ $kernel_version == *"5.3.6-Unraid"* ]]; then # 6.8.0-rc1
+if [[ $kernel_version == *"5.3.6-Unraid"* ]]; then # 6.8.0-rc1-3
   zfs_pkg="zfs-0.8.2-unRAID-6.8.0-rc1.x86_64.tgz"
   supported_kernel=true
   skip_spl=true
@@ -476,7 +479,7 @@ else
   echo ""
   echo "Unsupported kernel detected!" 
   echo ""
-  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: unRAID 6.3.4 - 6.8.0-rc1" -i "alert"
+  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Supported versions are: unRAID 6.3.4 - 6.8.0-rc3" -i "alert"
   exit 1
 fi
 
