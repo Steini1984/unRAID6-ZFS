@@ -7,7 +7,7 @@
 #
 # There are alot of hard coded links in this file that can break anytime!
 #
-# For up to date builds you need to update the links to the sources (update-links.sh should make it easy)
+# For up to date builds you need to update the links to the sources
 #
 
 #VARIABLES
@@ -26,7 +26,7 @@ https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/cmake-
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/pkg-config-0.29.2-x86_64-2.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/autoconf-2.69-noarch-2.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/automake-1.16.1-noarch-2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/kernel-headers-4.19.79-x86-1.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/kernel-headers-4.19.80-x86-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/cpio-2.12-x86_64-2.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/guile-2.2.6-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/gc-8.0.4-x86_64-1.txz
@@ -35,7 +35,7 @@ https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/binuti
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/perl-5.30.0-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/libtool-2.4.6-x86_64-12.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/m4-1.4.18-x86_64-2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/aaa_elflibs-15.0-x86_64-12.txz
+https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/aaa_elflibs-15.0-x86_64-13.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/patch-2.7.6-x86_64-3.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/attr-2.4.48-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/util-linux-2.34-x86_64-1.txz
@@ -49,6 +49,7 @@ https://mirrors.slackware.com/slackware/slackware64-current/slackware64/n/libtir
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/glibc-2.30-x86_64-1.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/python3-3.7.4-x86_64-2.txz
 https://mirrors.slackware.com/slackware/slackware64-current/slackware64/n/openssl-1.1.1d-x86_64-1.txz
+
 "
 
 SOURCES="

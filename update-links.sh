@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Latest verion of ZFS for Linux is: " $(curl -s https://zfsonlinux.org/  | grep -i releases/download | head -1 | cut -d ">" -f 2 | cut -d "<" -f 1)
+
 echo https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/$(curl -s https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/ | grep gettext-.*-x86_64-.*.txz |awk '{print $6}' | head -1 | cut -d "\"" -f 2) 
 echo https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/$(curl -s https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/ | grep libmpc-.*-x86_64-.*.txz |awk '{print $6}' | head -1 | cut -d "\"" -f 2) 
 echo https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/$(curl -s https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/ | grep -vi cmake |  grep make-.*-x86_64-.*.txz |awk '{print $6}' | head -1 | cut -d "\"" -f 2) 
