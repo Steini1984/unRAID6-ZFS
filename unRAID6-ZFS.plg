@@ -388,7 +388,7 @@ download_install() {
   fi
 }
 
-if [[ $kernel_version == *"5.3.6-Unraid"* ]]; then # 6.8.0-rc4
+if [[ $kernel_version == *"5.3.7-Unraid"* ]]; then # 6.8.0-rc4
   zfs_pkg="zfs-0.8.2-unRAID-6.8.0-rc4.x86_64.tgz"
   supported_kernel=true
   skip_spl=true
