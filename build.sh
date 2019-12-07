@@ -1,55 +1,13 @@
 #!/bin/bash
 
-# This is a script to build openzfs on unRAID
-# A lof of the code is stolen from gfjardim
+# This is a script to build the latest openzfs on unRAID
+# A lot of the code was based on work from gfjardim:
 # https://gist.githubusercontent.com/gfjardim/c18d782c3e9aa30837ff/raw/224264b305a56f85f08112a4ca16e3d59d45d6be/build.sh
-#
-#
-# There are alot of hard coded links in this file that can break anytime!
-#
-# For up to date builds you need to update the links to the sources
-#
 
- #VARIABLES
-zfs_version=0.8.2
+#VARIABLES
+zfs_version="$(curl -s https://zfsonlinux.org/  | grep -i releases/download | head -1 | cut -d ">" -f 2 | cut -d "<" -f 1 | cut -d "-" -f 2)"
 D="$(dirname "$(readlink -f ${BASH_SOURCE[0]})")"
 [[ $(uname -r) =~ ([0-9.]*) ]] &&  KERNEL=${BASH_REMATCH[1]} || return 1
-
-URLS="
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/gettext-0.20.1-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/libmpc-1.1.0-x86_64-2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/make-4.2.1-x86_64-4.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/dbus-glib-0.110-x86_64-2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/gcc-9.2.0-x86_64-4.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/gcc-g++-9.2.0-x86_64-4.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/cmake-3.15.5-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/pkg-config-0.29.2-x86_64-2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/autoconf-2.69-noarch-2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/automake-1.16.1-noarch-2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/kernel-headers-4.19.85-x86-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/cpio-2.13-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/guile-2.2.6-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/gc-8.0.4-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/bison-3.4.2-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/binutils-2.33.1-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/perl-5.30.1-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/libtool-2.4.6-x86_64-12.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/m4-1.4.18-x86_64-2.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/aaa_elflibs-15.0-x86_64-16.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/patch-2.7.6-x86_64-3.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/attr-2.4.48-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/a/util-linux-2.34-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/ap/bc-1.07.1-x86_64-3.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/ap/sqlite-3.30.1-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/mpfr-4.0.2-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/ncurses-6.1_20191026-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/libunistring-0.9.10-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/elfutils-0.177-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/n/libtirpc-1.1.4-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/l/glibc-2.30-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d/python3-3.7.5-x86_64-1.txz
-https://mirrors.slackware.com/slackware/slackware64-current/slackware64/n/openssl-1.1.1d-x86_64-1.txz
-"
 
 SOURCES="
 https://sourceforge.net/projects/libuuid/files/libuuid-1.0.3.tar.gz
@@ -88,23 +46,71 @@ ask() {
     done
 }
 
+#variables for counter
+count=0
+total=33
+pstr="[=======================================================================]"
+
+#make a url - parameters: 1=folder 2=name 3=arch
+build_url(){
+  #build URL
+  URLS+=$(echo $mirror/$1/$(curl -s $mirror/$1/ | grep $2-.*-$3-.*.txz |awk '{print $6}' | head -1 | cut -d "\"" -f 2))$'\n'
+  count=$(( $count + 1 ))
+  pd=$(( $count * 73 / $total ))
+  printf "\r%3d.%1d%% %.${pd}s" $(( $count * 100 / $total )) $(( ($count * 1000 / $total) % 10 )) $pstr
+}
+
+get_urls(){
+  mirror="https://mirrors.slackware.com/slackware/slackware64-current/slackware64"
+  URLS=""
+  build_url a gettext x86_64
+  build_url l libmpc x86_64
+  build_url d \"make x86_64
+  build_url l dbus x86_64
+  build_url d gcc x86_64
+  build_url d gcc-g++ x86_64
+  build_url d cmake x86_64
+  build_url d pkg x86_64
+  build_url d autoconf noarch
+  build_url d automake noarch
+  build_url d kernel x86
+  build_url a cpio x86_64
+  build_url d guile x86_64
+  build_url l gc x86_64
+  build_url d bison x86_64
+  build_url d binutils x86_64
+  build_url d perl x86_64
+  build_url d libtool x86_64
+  build_url d m4 x86_64
+  build_url a aaa_elflibs x86_64
+  build_url a patch x86_64
+  build_url a attr x86_64
+  build_url a util x86_64
+  build_url ap sqlite x86_64
+  build_url ap bc x86_64
+  build_url l mpfr x86_64
+  build_url l ncurses x86_64
+  build_url l libunistring x86_64
+  build_url l elfutils x86_64
+  build_url n libtirpc x86_64
+  build_url l glibc x86_64
+  build_url d python3 x86_64
+  build_url n openssl x86_64
+}
+
 ## MODULES ##
 do_install_modules(){
+  echo ""
+  echo "Fetching package urls......"
+  echo ""
+  printf "\r%3d.%1d%% %.${pd}s" $(( $count * 100 / $total )) $(( ($count * 1000 / $total) % 10 )) $pstr
+  get_urls
+
   [ ! -d "$D/packages" ] && mkdir $D/packages
   OLD_IFS="$IFS";IFS=$'\n';
   for url in $URLS; do
     PKGPATH=${D}/packages/$(basename $url)
     [ ! -e "${PKGPATH}" ] && wget --no-check-certificate $url -O "${PKGPATH}"
-
-    #check if the package is empty
-    if [ ! -s $PKGPATH ]; then
-         echo "***********************************"
-         echo "The package: " $PKGPATH " is broken"
-         echo "You need to update the link for it "
-         echo "in this script"
-         echo "***********************************"
-         exit 1
-    fi
 
      [[ "${PKGPATH}" == *.txz ]] && installpkg "${PKGPATH}"
   done
@@ -119,7 +125,7 @@ do_extract_kernel(){
   rm -rf $D/kernel; mkdir $D/kernel
 
   [[ ! -f $D/linux-${KERNEL}.tar.xz ]] && wget $LINK -O $D/linux-${KERNEL}.tar.xz
-  
+
   tar -C $D/kernel --strip-components=1 -Jxf $D/linux-${KERNEL}.tar.xz
 
   rsync -av /usr/src/linux-$(uname -r)/ $D/kernel/
@@ -132,10 +138,6 @@ do_extract_kernel(){
   make oldconfig
 }
 
-do_compile_kernel(){
-  cd $D/kernel
-  make -j $(cat /proc/cpuinfo | grep -m 1 -Po "cpu cores.*?\K\d")
-}
 
 do_install_kernel_modules () {
   cd $D/kernel
@@ -150,6 +152,7 @@ do_copy_modules(){
 }
 
 do_install_packages() {
+
 for package in $(find /boot/extra/ -iname "*.t*z"); do
   ROOT=$D/bzroot installpkg $package; 
 done
@@ -175,7 +178,7 @@ do_compile() {
   make install
 
   cd $D/sources/zlib*/
-  ./configure 
+  ./configure
   make
   make install
 
@@ -196,14 +199,15 @@ do_compile() {
 }
 
 do_cleanup(){
-  rm -rf $D/bzroot $D/kernel $D/packages $D/linux-*.tar.xz $D/sources
+  rm -rf $D/bzroot $D/kernel $D/packages $D/linux-*.tar.xz $D/sources $D/zfs-*
 }
+
 
 #Change to current directory
 cd $D
 
 ##Unmount bzmodules and make rw
-if mount | grep /lib/modules > /dev/null; 
+if mount | grep /lib/modules > /dev/null;
 then
       echo "Remounting modules"
       cp -r /lib/modules /tmp
@@ -212,18 +216,42 @@ then
       mv -f  /tmp/modules /lib
 fi
 
+if [ "$1" = "-a" ] || [ "$1" = "--auto" ]; then
 
-if ask "1) Do you want to clean directories?" N ; then do_cleanup; fi
+  echo ""
+  echo "Starting automatic build of ZFS version "$zfs_version" for unRAID-"$(cat /etc/unraid-version | cut -d '"' -f2)" running Kernel:" $(uname -r)
+  do_cleanup
+  do_install_modules
+  do_extract_kernel
+  do_install_kernel_modules
+  do_compile
 
-if ask "2) Do you want to install build dependencies?" $([[ -f /usr/bin/make ]] && echo N||echo Y;) ; then do_install_modules; fi
+elif [ "$1" = "-h" ] ||  [ "$1" = "--help" ]; then
+echo "Usage: ./build.sh [OPTION]"
+echo "Script that gets all dependancies and build ZFS on unRAID 6+"
+echo ""
+echo "Optinal arguments"
+echo "-a, --all                  automatic build of ZFS"
+echo "-h, --help                 this page"
 
-if ask "3) Do you want to download and extract the Linux kernel?" $([[ -f $D/kernel/.config ]] && echo N||echo Y;) ;then do_extract_kernel;fi
 
-if ask "3.1) Do you want to compile the Linux kernel?" N ;then do_compile_kernel; fi
 
-if ask "3.2) Do you want to install Linux kernel modules?" N ;then do_install_kernel_modules; fi
 
-if ask "4) Do you want to compile ZFS?" N ; then do_compile; fi
+else
+  if ask "1) Do you want to clean directories?" N ; then do_cleanup; fi
+  if ask "2) Do you want to install build dependencies?" $([[ -f /usr/bin/make ]] && echo N||echo Y;) ; then do_install_modules; fi
+  if ask "3) Do you want to download and extract the Linux kernel?" $([[ -f $D/kernel/.config ]] && echo N||echo Y;) ;then do_extract_kernel;fi
+  if ask "3.1) Do you want to install Linux kernel modules?" N ;then do_install_kernel_modules; fi
+  if ask "4) Do you want to compile ZFS ?" N ; then do_compile; fi
+fi
+
+if [ $zfs_version != $(curl -s https://raw.githubusercontent.com/Steini1984/unRAID6-ZFS/master/unRAID6-ZFS.plg | grep zfs_pkg  | head -1 | cut -d "-" -f 2)  ]; then
+  echo ""
+  echo "******************************"
+  echo "  New ZFS version: " $zfs_version
+  echo "******************************"
+  echo ""
+fi
 
 ##Return to original directory
 cd $D
