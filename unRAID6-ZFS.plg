@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "0.8.2">
+  <!ENTITY version   "1.0">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -19,6 +19,9 @@
 >
 
 <CHANGES>
+
+###2020.06.19
+- Updated the version number to clear things up. The plugin does not need to be updated for new builds - the plugin checks for available builds on boot
 
 ###2020.01.09
 - Rewrote the plugin so it does not need to be updated everytime unRAID is upgraded. It checks if there is already a new build available and installs that
