@@ -1,16 +1,17 @@
 #!/bin/bash
 
-# This is a script to build the latest openzfs on unRAID
+# This is a script to build openzfs on unRAID
 # A lot of the code was based on work from gfjardim:
 # https://gist.githubusercontent.com/gfjardim/c18d782c3e9aa30837ff/raw/224264b305a56f85f08112a4ca16e3d59d45d6be/build.sh
 
-#VARIABLES
-zfs_version="$(curl -s https://zfsonlinux.org/  | grep -i releases/download | head -1 | cut -d ">" -f 2 | cut -d "<" -f 1 | cut -d "-" -f 2)"
+#VARIABLES..
+zfs_version="2.0.0-rc4"
+
 D="$(dirname "$(readlink -f ${BASH_SOURCE[0]})")"
 [[ $(uname -r) =~ ([0-9.]*) ]] &&  KERNEL=${BASH_REMATCH[1]} || return 1
 
 SOURCES="
-https://sourceforge.net/projects/libuuid/files/libuuid-1.0.3.tar.gz
+https://vorboss.dl.sourceforge.net/project/libuuid/libuuid-1.0.3.tar.gz
 http://www.zlib.net/zlib-1.2.11.tar.gz
 https://github.com/openzfs/zfs/releases/download/zfs-$zfs_version/zfs-$zfs_version.tar.gz
 "
@@ -184,6 +185,7 @@ do_compile() {
 
 
   cd $D/sources/zfs*/
+  sh autogen.sh
   ./configure --prefix=/usr
   make
   make install DESTDIR=$(pwd)/PACKAGE
