@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "1.0">
+  <!ENTITY version   "1.1">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -19,6 +19,9 @@
 >
 
 <CHANGES>
+
+###2020.10.23
+- Added the ability to download unstable builds of ZFS by having a file named /boot/config/plugins/unRAID6-ZFS/USE_UNSTABLE_BUILDS
 
 ###2020.06.19
 - Updated the version number to clear things up. The plugin does not need to be updated for new builds - the plugin checks for available builds on boot
@@ -388,12 +391,18 @@ ICAgICAgICA=
 
 unRAID_version=$(cat /etc/unraid-version | cut -d '"' -f2)
 local_package=$(ls &plugin;/packages/*.tgz | grep $unRAID_version.x86_64.tgz )
+UNSTABLE=/boot/config/plugins/unRAID6-ZFS/USE_UNSTABLE_BUILDS
 
 #Download and install a package
 download_install() {
 
+  if [ -f "$UNSTABLE" ]; then
+    local src="&repo;/packages/Unstable/${1}"
+  else 
+    local src="&repo;/packages/${1}"
+  fi
+
   local dest="&plugin;/packages/${1}"
-  local src="&repo;/packages/${1}"
  
   mkdir -p "&plugin;/packages"
   if [ ! -f "${dest}" ]; then
@@ -437,6 +446,11 @@ download_install() {
     zpool import -a >> /dev/null
     #fix for the icon
     chmod 755 /usr/local/emhttp/plugins/unRAID6-ZFS/
+
+    if [ -f "$UNSTABLE" ]; then
+      /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS Unstable detected" -s "You are running an unstable version of ZFS" -d "To revert to a stable build you must remove cached pacakges, delete this file: /boot/config/plugins/unRAID6-ZFS/USE_UNSTABLE_BUILDS then reboot" -i "alert"
+    fi 
+
   fi
 }
 
@@ -452,14 +466,20 @@ else
   echo "Package not cached"
   echo ""
   echo "checking if the packages has been built for  unRAID $unRAID_version .."
-  echo ""
+  echo ""   
+  if [ -f "$UNSTABLE" ]; then
+    external_package=$(curl -s https://github.com/Steini1984/unRAID6-ZFS/tree/master/packages/Unstable | grep "zfs.*$unRAID_version.x86_64.tgz" | grep -vi md5 | tail -1  | cut -d "&gt;" -f 3 | cut -d "&lt;" -f 1)
+    echo $external_package
+  else
     external_package=$(curl -s https://github.com/Steini1984/unRAID6-ZFS/tree/master/packages | grep "zfs.*$unRAID_version.x86_64.tgz" | grep -vi md5 | tail -1  | cut -d "&gt;" -f 3 | cut -d "&lt;" -f 1)
+  fi
+
   if [ -n "$external_package" ]; then
     echo Downloading $external_package from Github
     download_install $external_package
   else
     echo ""
-    echo "Unsupported kernel detected!" 
+    echo "Unsupported kernel detected!"
     echo  "ZFS not installed! - Please follow this post https://forums.unraid.net/topic/41333-zfs-plugin-for-unraid/ and reinstall the plugin when this version of unRAID is supported"
     echo ""
     /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Please follow this post https://forums.unraid.net/topic/41333-zfs-plugin-for-unraid/ and reinstall the plugin when this version of unRAID is supported" -i "alert"
