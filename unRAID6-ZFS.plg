@@ -21,7 +21,7 @@
 <CHANGES>
 
 ###2020.10.24
-- Added import/export form ZFS pools on Array start/stop
+- Added import/export from ZFS pools on Array start/stop
 
 ###2020.10.23
 - Added the ability to download unstable builds of ZFS by having a file named /boot/config/plugins/unRAID6-ZFS/USE_UNSTABLE_BUILDS
