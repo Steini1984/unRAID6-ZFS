@@ -20,6 +20,9 @@
 
 <CHANGES>
 
+###2020.10.24
+- Added import/export form ZFS pools on Array start/stop
+
 ###2020.10.23
 - Added the ability to download unstable builds of ZFS by having a file named /boot/config/plugins/unRAID6-ZFS/USE_UNSTABLE_BUILDS
 
@@ -444,6 +447,18 @@ download_install() {
     depmod >> /dev/null
     modprobe zfs  >> /dev/null
     zpool import -a >> /dev/null
+
+    #ZFS Pool import/export on Array start/stop
+    echo "
+# Import all existing ZFS Pools on Array start
+echo 'Importing all ZFS Pools in background'
+zpool import -a &" >> /usr/local/emhttp/plugins/dynamix/event/disks_mounted/local_syslog_start
+	echo "
+# Export all existing ZFS Pools on Array stop
+echo 'Exporting all ZFS Pools in background'
+zpool export -a &" >> /usr/local/emhttp/plugins/dynamix/event/unmounting_disks/local_syslog_stop
+
+fi
     #fix for the icon
     chmod 755 /usr/local/emhttp/plugins/unRAID6-ZFS/
 
@@ -499,6 +514,9 @@ echo "+=========================================================================
 # Remove plugin related files
 rm -rf /usr/local/emhttp/plugins/&name;
 rm -rf &plugin;/packages
+#Remove ZFS import/export on Array start/stop
+sed -i '/\n/!N;/\n.*# Import all existing ZFS Pools on Array start/{$d;N;N;d};P;D' /usr/local/emhttp/plugins/dynamix/event/disks_mounted/local_syslog_start
+sed -i '/\n/!N;/\n.*# Export all existing ZFS Pools on Array stop/{$d;N;N;d};P;D' /usr/local/emhttp/plugins/dynamix/event/unmounting_disks/local_syslog_stop
 echo ""
 echo "OpenZFS plugin uninstalled. ZFS will be active until next reboot "
 </INLINE>
