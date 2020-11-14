@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "1.2">
+  <!ENTITY version   "1.2.1">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -19,6 +19,9 @@
 >
 
 <CHANGES>
+
+###2020.11.14
+- Made changes regarding modules instroduced in 6.9.0-beta35
 
 ###2020.10.23
 - Added the ability to download unstable builds of ZFS by having a file named /boot/config/plugins/unRAID6-ZFS/USE_UNSTABLE_BUILDS
@@ -424,14 +427,15 @@ download_install() {
     #Start the install script
     if mount | grep /lib/modules > /dev/null;
     then
-          echo ""
-          echo "Remounting modules"
-          echo ""
-          cp -r /lib/modules /tmp
-          umount -l /lib/modules/
-          rm -rf  /lib/modules
-          mv -f  /tmp/modules /lib
-    fi
+      if [ -w /lib/modules ] ; then echo "No need to remount modules"
+      else
+       	echo "Remounting modules"
+       	cp -r /lib/modules /tmp
+        umount -l /lib/modules/
+       	rm -rf  /lib/modules
+        mv -f  /tmp/modules /lib
+      fi
+  fi 	
 
     /sbin/installpkg "$dest"
     echo ""
