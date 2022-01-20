@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "1.2.2">
+  <!ENTITY version   "2.0.0">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -16,15 +16,20 @@
      version="&version;"
      pluginURL="&pluginURL;"
      min="6.6.6"
+     support="https://forums.unraid.net/topic/41333-zfs-plugin-for-unraid/"
 >
 
 <CHANGES>
 
+###2022.01.20
+- Changed back to Kernel detection instead of unRAID version detection
+- Changed to Github Releases for ZFS Packages
+
 ###2021.08.23
-- Added the Plugin Update Helper from ich777
+- Added the Plugin Update Helper from ich777
 
 ###2020.11.14
-- Made changes regarding modules instroduced in 6.9.0-beta35
+- Made changes regarding modules instroduced in 6.9.0-beta35
 
 ###2020.10.23
 - Added the ability to download unstable builds of ZFS by having a file named /boot/config/plugins/unRAID6-ZFS/USE_UNSTABLE_BUILDS
@@ -245,18 +250,11 @@
 
 <FILE Name="&emhttp;/README.md">
 <INLINE>
-ZFS for unRAID 6
+**ZFS for unRAID 6**
 
-The native Linux kernel port of the ZFS filesystem.
+The native Linux kernel port of the ZFS filesystem. Allows you to use ZFS forma>
 
-Allows you to use ZFS format on non Array disks.
-
-This plugin is console only (no GUI)
-
-* Needs to be rebuilt for every new kernel 			  *
-* If your kernel is not supported please please follow this post  * 					*
-* https://forums.unraid.net/topic/41333-zfs-plugin-for-unraid/ 	  *
-*                                                                 *
+This plugin is console only (no GUI)!
 
 </INLINE>
 </FILE>
@@ -392,107 +390,150 @@ ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
 ICAgICAgICA=
 </INLINE>
 </FILE>
+
 <FILE Run="/bin/bash">
 <INLINE>
 
-unRAID_version=$(cat /etc/unraid-version | cut -d '"' -f2)
-local_package=$(ls &plugin;/packages/*.tgz | grep $unRAID_version.x86_64.tgz )
-UNSTABLE=/boot/config/plugins/unRAID6-ZFS/USE_UNSTABLE_BUILDS
-
-#Download and install a package
-download_install() {
-
-  if [ -f "$UNSTABLE" ]; then
-    local src="&repo;/packages/Unstable/${1}"
-  else 
-    local src="&repo;/packages/${1}"
-  fi
-
-  local dest="&plugin;/packages/${1}"
- 
+#Create packages directory if non existent
+if [ ! -d "&plugin;/packages" ]; then
   mkdir -p "&plugin;/packages"
-  if [ ! -f "${dest}" ]; then
-    curl --location --silent --fail "${src}" --output "${dest}"
-  fi
-  if [ ! -f "${dest}.md5" ]; then
-    curl --location --silent --fail "${src}.md5" --output "${dest}.md5"
-  fi
+fi
 
-  orig_md5=$(/usr/bin/cat $dest.md5)
-  file_md5=$(/usr/bin/md5sum ${dest})
+#Create settings file if not found
+if [ ! -f "&plugin;/settings.cfg" ]; then
+  echo 'check_for_updates=true
+unstable_packages=false' &gt; "&plugin;/settings.cfg"
+fi
 
-  if [ "${file_md5:0:32}" != "${orig_md5:0:32}" ]; then
-    echo "Wrong '${1}' package md5 hash."
-    rm "${dest}"
-    exit 1
+#Remove obsolete ZFS package files from packages directory
+rm -f $(ls &plugin;/packages/zfs-*.tgz 2&gt;/dev/null | grep "\-unRAID\-")
+
+#Wait for Network and timeout after 30 seconds
+HOST="8.8.8.8"
+for i in {1..10}; do
+  ping -c1 $HOST &amp;&gt; /dev/null &amp;&amp; break;
+done
+
+#Set variables
+KERNEL_V="$(uname -r)"
+DL_URL="https://github.com/Steini1984/unRAID6-ZFS/releases/download/$KERNEL_V" 
+UPDATE_CHECK="$(cat &plugin;/settings.cfg | grep "check_for_updates" | cut -d '=' -f2)"
+UNSTABLE_BUILDS="$(cat &plugin;/settings.cfg | grep "unstable_packages" | cut -d '=' -f2)"
+
+#Get local package version if available
+CUR_V="$(ls -p &plugin;/packages 2&gt;/dev/null | grep -E -v '\.md5' | sort -V | tail -1 | cut -d '-' -f2)"
+
+#Check if unstable versions are available and fall back to stable if no unstable detected
+if [ "$UNSTABLE_BUILDS" == "true" ]; then
+  AVAIL_V="$(wget -qO- https://api.github.com/repos/Steini1984/unRAID6-ZFS/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep -E 'zfs-.*.tgz' | grep -E -v '\.md5$' | sort -V | cut -d '-' -f2)"
+  if [ -z "$(echo "$AVAIL_V" | grep -E "rc|beta")" ]; then
+    echo
+    echo "--------------No unstable version from ZFS for---------------"
+    echo "---Kernel v${KERNEL_V%%-*} found, falling back to stable!----"
+    sed -i '/unstable_packages=/c\unstable_packages=false' "&plugin;/settings.cfg"
+    AVAIL_V="$(echo "$AVAIL_V" | grep -v -E "rc|beta")"
   else
-
-    #Start the install script
-    if mount | grep /lib/modules > /dev/null;
-    then
-      if [ -w /lib/modules ] ; then echo "No need to remount modules"
-      else
-       	echo "Remounting modules"
-       	cp -r /lib/modules /tmp
-        umount -l /lib/modules/
-       	rm -rf  /lib/modules
-        mv -f  /tmp/modules /lib
-      fi
-  fi 	
-
-    /sbin/installpkg "$dest"
-    echo ""
-    echo "Deleting old files.."
-    find "&plugin;/packages/"* ! -name *"$1"* -exec rm {} \;
-
-    echo ""
-    echo "Loading ZFS modules and importing pools (this could take some time)"
-    echo ""
-    depmod >> /dev/null
-    modprobe zfs  >> /dev/null
-    zpool import -a >> /dev/null
-    #fix for the icon
-    chmod 755 /usr/local/emhttp/plugins/unRAID6-ZFS/
-
-    if [ -f "$UNSTABLE" ]; then
-      /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS Unstable detected" -s "You are running an unstable version of ZFS" -d "To revert to a stable build you must remove cached pacakges, delete this file: /boot/config/plugins/unRAID6-ZFS/USE_UNSTABLE_BUILDS then reboot" -i "alert"
-    fi 
-
+    AVAIL_V="$(echo "$AVAIL_V" | grep -E "rc|beta")"
   fi
-}
-
-if [ -n "$local_package" ]; then
-  echo ""
-  echo "Local package available, installing.."
-  echo ""
-  download_install $(basename $local_package)
-
 else
-  echo ""
-  echo "Package not cached"
-  echo ""
-  echo "checking if the packages has been built for  unRAID $unRAID_version .."
-  echo ""   
-  if [ -f "$UNSTABLE" ]; then
-    external_package=$(curl -s https://github.com/Steini1984/unRAID6-ZFS/tree/master/packages/Unstable | grep "zfs.*$unRAID_version.x86_64.tgz" | grep -vi md5 | tail -1  | cut -d "&gt;" -f 3 | cut -d "&lt;" -f 1)
-    echo $external_package
-  else
-    external_package=$(curl -s https://github.com/Steini1984/unRAID6-ZFS/tree/master/packages | grep "zfs.*$unRAID_version.x86_64.tgz" | grep -vi md5 | tail -1  | cut -d "&gt;" -f 3 | cut -d "&lt;" -f 1)
-  fi
+  AVAIL_V="$(wget -qO- https://api.github.com/repos/Steini1984/unRAID6-ZFS/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep -E 'zfs-.*.tgz' | grep -E -v '\.md5$' | sort -V | cut -d '-' -f2 | grep -v -E "rc|beta" )"
+fi
 
-  if [ -n "$external_package" ]; then
-    echo Downloading $external_package from Github
-    download_install $external_package
+#Check if update check is enabled and set version
+if [ "$UPDATE_CHECK" != "true" ]; then
+  if [ -z "$CUR_V" ]; then
+    LAT_V="$(echo "$AVAIL_V" | sort -V | tail -1)"
+    if [ -z "$LAT_V" ]; then
+      if [ -d &plugin; ]; then
+        rm -rf &plugin;
+      fi
+      echo
+      echo "----ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR----"
+      echo "---Can't get latest ZFS version and found no local package---"
+      exit 1
+    fi
   else
-    echo ""
-    echo "Unsupported kernel detected!"
-    echo  "ZFS not installed! - Please follow this post https://forums.unraid.net/topic/41333-zfs-plugin-for-unraid/ and reinstall the plugin when this version of unRAID is supported"
-    echo ""
-    /usr/local/emhttp/plugins/dynamix/scripts/notify -e "ZFS not installed!" -s "Unsupported kernel detected!" -d "Please follow this post https://forums.unraid.net/topic/41333-zfs-plugin-for-unraid/ and reinstall the plugin when this version of unRAID is supported" -i "alert"
-    exit 1
+    LAT_V="${CUR_V}"
+  fi
+else
+  LAT_V="$(echo "$AVAIL_V" | sort -V | tail -1)"
+  if [ -z "$LAT_V" ]; then
+    if [ -z "$CUR_V" ]; then
+      if [ -d &plugin; ]; then
+        rm -rf &plugin;
+      fi
+      echo
+      echo "----ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR----"
+      echo "---Can't get latest ZFS version and found no local package---"
+      exit 1
+    else
+      LAT_V="${CUR_V}"
+      echo
+      echo "---Can't get latest ZFS version, using local ZFS package v$CUR_V!---"
+    fi
   fi
 fi
-  
+
+download() {
+#Download ZFS package
+if wget -q -nc --show-progress --progress=bar:force:noscroll -O "&plugin;/packages/zfs-${LAT_V}-${KERNEL_V}-1.tgz" "${DL_URL}/zfs-${LAT_V}-${KERNEL_V}-1.tgz" ; then
+  if [ "$(md5sum "&plugin;/packages/zfs-${LAT_V}-${KERNEL_V}-1.tgz" | cut -d ' ' -f1)" != "$(wget -qO- "${DL_URL}/zfs-${LAT_V}-${KERNEL_V}-1.tgz.md5" | cut -d ' ' -f1)" ]; then
+    echo
+    echo "----ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR----"
+    echo "-----------------------CHECKSUM ERROR!-----------------------"
+    exit 1
+  fi
+  echo
+  echo "----Successfully downloaded ZFS package, please wait...!-----"
+else
+  echo
+  echo "----ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR----"
+  echo "-----------------Can't download ZFS package------------------"
+  exit 1
+fi
+}
+
+check() {
+#Check for old packages
+rm -rf $(ls -d &plugin;/packages/zfs-*.tgz | grep -v "${KERNEL_V%%-*}")
+rm -rf $(ls -d &plugin;/packages/zfs-*.tgz | grep -v "${LAT_V}")
+if [ ! -f "&plugin;/packages/zfs-${LAT_V}-${KERNEL_V}-1.tgz" ]; then
+  echo
+  echo "---------Downloading ZFS v${LAT_V}, please wait...!----------"
+  echo "---This could take some time, please don't close this window!---"
+  download
+else
+  echo
+  echo "----------------ZFS v${CUR_V} found locally!-----------------"
+fi
+}
+
+install() {
+#Install ZFS
+/sbin/installpkg "&plugin;/packages/zfs-${LAT_V}-${KERNEL_V}-1.tgz"
+/sbin/depmod -a
+/sbin/modprobe zfs
+zpool import -a
+#Fix for the icon
+chmod 755 /usr/local/emhttp/plugins/unRAID6-ZFS/
+}
+
+#Check for old packages and if ZFS is available locally
+check
+
+if [ ! -z "$(lsmod | grep "zfs")" ]; then
+  echo
+  echo "-----------Nothing to do, ZFS is already enabled!------------"
+  echo
+else
+  echo
+  echo "----------Installing ZFS v${LAT_V}, please wait...!----------"
+  install &gt;/dev/null
+  echo
+  echo "----------Installation of ZFS v${LAT_V} successful!----------"
+  echo
+fi
+
 #Check if Plugin Update Helper is downloaded and up-to-date
 if [ ! -f &plugin;/plugin_update_helper ]; then
   wget -q -T 5 -O &plugin;/plugin_update_helper "https://raw.githubusercontent.com/ich777/unraid-plugin_update_helper/master/plugin_update_helper"
@@ -544,7 +585,7 @@ echo "| Uninstalling OpenZFS"
 echo "+=============================================================================="
 # Remove plugin related files
 rm -rf /usr/local/emhttp/plugins/&name;
-rm -rf &plugin;/packages
+rm -rf &plugin;
 echo ""
 echo "OpenZFS plugin uninstalled. ZFS will be active until next reboot "
 </INLINE>
