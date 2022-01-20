@@ -252,7 +252,7 @@
 <INLINE>
 **ZFS for unRAID 6**
 
-The native Linux kernel port of the ZFS filesystem. Allows you to use ZFS forma>
+The native Linux kernel port of the ZFS filesystem. Allows you to use ZFS format on non Array disks.
 
 This plugin is console only (no GUI)!
 
