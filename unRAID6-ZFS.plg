@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "2.0.0">
+  <!ENTITY version   "2.1.0">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -20,6 +20,10 @@
 >
 
 <CHANGES>
+
+###2022.01.31
+- Added automatic scrub from all ZFS pools after unclean shutdown
+- Added option to turn of automatic scrub after unclean shutdown to settings file
 
 ###2022.01.20
 - Changed back to Kernel detection instead of unRAID version detection
@@ -402,7 +406,13 @@ fi
 #Create settings file if not found
 if [ ! -f "&plugin;/settings.cfg" ]; then
   echo 'check_for_updates=true
-unstable_packages=false' &gt; "&plugin;/settings.cfg"
+unstable_packages=false
+unclean_shutdown_scrub=true' &gt; "&plugin;/settings.cfg"
+fi
+
+#Add missing entries to seetings file if not exists
+if [ ! "$(grep "unclean_shutdown_scrub=" &plugin;/settings.cfg)" ]; then
+  echo "unclean_shutdown_scrub=true" &gt;&gt; &plugin;/settings.cfg
 fi
 
 #Remove obsolete ZFS package files from packages directory
@@ -532,6 +542,36 @@ else
   echo
   echo "----------Installation of ZFS v${LAT_V} successful!----------"
   echo
+fi
+
+#Get zpools and scrub them if unclean shutdown was detected depending if enabled or not
+if [ "$(grep "unclean_shutdown_scrub=" &plugin;/settings.cfg | cut -d '=' -f2)" == "true" ]; then
+  #Create scrub_finish-notify.sh
+  mkdir -p /etc/zfs/zed.d
+  cat &lt;&lt; EOF &gt; /etc/zfs/zed.d/scrub_finish-notify.sh
+#!/bin/bash
+healthy="\$("\${ZPOOL}" status -x "\${ZEVENT_POOL}" | grep "'\${ZEVENT_POOL}' is healthy")"
+if [ -z "\${healthy}" ]; then
+  extra="-i alert -l https://forums.unraid.net/topic/41333-zfs-plugin-for-unraid/"
+  message="ZFS Scrub for Pool: \${ZEVENT_POOL} finished! Pool degraded! Click this message to go to the ZFS support thread on the unRAID Forums!"
+else
+  message="ZFS Scrub for Pool: \${ZEVENT_POOL} finished! Pool is healthy!"
+fi
+/usr/local/emhttp/plugins/dynamix/scripts/notify -e "unRAID-ZFS" -d "\${message}" \${extra}
+EOF
+  chmod 755 /etc/zfs/zed.d/scrub_finish-notify.sh
+  echo "zed -d /etc/zfs/zed.d" | at now
+  if [ ! $(pidof emhttpd) ] &amp;&amp; [ -f /boot/config/forcesync ]; then
+    ZPOOLS="$(zpool list -o name | tail -n +2)"
+    echo
+    echo "Unclean shutdown detected, starting ZFS Scrub for Pool(s): ${ZPOOLS//$'\n'/, }!"
+    echo
+    /usr/local/emhttp/plugins/dynamix/scripts/notify -e "unRAID-ZFS" -d "Unclean shutdown detected, started Scrub for Pool(s): ${ZPOOLS//$'\n'/, }!"
+    while read -r line
+    do
+      echo "zpool scrub $line" | at now
+    done &lt;&lt;&lt; "${ZPOOLS}"
+  fi
 fi
 
 #Check if Plugin Update Helper is downloaded and up-to-date
