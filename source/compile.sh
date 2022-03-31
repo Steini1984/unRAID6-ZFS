@@ -5,6 +5,10 @@ if [ ! -d ${DATA_DIR}/zfs-v${ZFS_V} ]; then
 fi
 if [ ! -f ${DATA_DIR}/zfs-v${ZFS_V}.tar.gz ]; then
   wget -q -nc --show-progress --progress=bar:force:noscroll -O ${DATA_DIR}/zfs-v${ZFS_V}.tar.gz https://github.com/openzfs/zfs/releases/download/zfs-${ZFS_V}/zfs-${ZFS_V}.tar.gz
+  if [ ! -s ${DATA_DIR}/zfs-v${ZFS_V}.tar.gz ]; then
+    rm -rf ${DATA_DIR}/zfs-v${ZFS_V}.tar.gz
+    wget -q -nc --show-progress --progress=bar:force:noscroll -O ${DATA_DIR}/zfs-v${ZFS_V}.tar.gz https://github.com/openzfs/zfs/archive/refs/tags/zfs-${ZFS_V}.tar.gz
+  fi
 else
   echo "---ZFS v${ZFS_V} found locally---"
 fi
