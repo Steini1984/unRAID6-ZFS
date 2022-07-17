@@ -416,6 +416,7 @@ if wget -q -nc --show-progress --progress=bar:force:noscroll -O "&packages;/${KE
     echo
     echo "----ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR----"
     echo "-----------------------CHECKSUM ERROR!-----------------------"
+    rm -rf &plugin;
     exit 1
   fi
   echo
@@ -424,6 +425,7 @@ else
   echo
   echo "----ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR----"
   echo "-----------------Can't download ZFS package------------------"
+  rm -rf &plugin;
   exit 1
 fi
 }
