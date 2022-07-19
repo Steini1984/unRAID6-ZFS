@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "2.1.3">
+  <!ENTITY version   "2.1.4">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -22,6 +22,8 @@
 
 <CHANGES>
 
+###2022.07.19
+- Fixed bug for ZFS in Plugin Update Helper
   
 ###2022.07.17
 - Necessary changes for unRAID 6.11+
