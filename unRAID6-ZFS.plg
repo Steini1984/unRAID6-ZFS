@@ -4,7 +4,7 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "unRAID6-ZFS">
   <!ENTITY author    "Steini1984">
-  <!ENTITY version   "2.1.4">
+  <!ENTITY version   "2.1.5">
   <!ENTITY repo      "https://raw.githubusercontent.com/&author;/unRAID6-ZFS/master">
   <!ENTITY pluginURL "&repo;/&name;.plg">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
@@ -21,6 +21,10 @@
 >
 
 <CHANGES>
+
+###2022.07.21
+- Version detection from package via GitHub API
+- Save md5 in packages directory
 
 ###2022.07.19
 - Fixed bug for ZFS in Plugin Update Helper
@@ -413,12 +417,13 @@ ICAgICAgICA=
 
 download() {
 # Download ZFS package
-if wget -q -nc --show-progress --progress=bar:force:noscroll -O "&packages;/${KERNEL_V%%-*}/zfs-${LAT_V}-${KERNEL_V}-1.tgz" "${DL_URL}/zfs-${LAT_V}-${KERNEL_V}-1.tgz" ; then
-  if [ "$(md5sum "&packages;/${KERNEL_V%%-*}/zfs-${LAT_V}-${KERNEL_V}-1.tgz" | cut -d ' ' -f1)" != "$(wget -qO- "${DL_URL}/zfs-${LAT_V}-${KERNEL_V}-1.tgz.md5" | cut -d ' ' -f1)" ]; then
+if wget -q -nc --show-progress --progress=bar:force:noscroll -O "&packages;/${KERNEL_V%%-*}/${LAT_PACKAGE}" "${DL_URL}/${LAT_PACKAGE}" ; then
+  wget -q -nc --show-progress --progress=bar:force:noscroll -O "&packages;/${KERNEL_V%%-*}/${LAT_PACKAGE}.md5" "${DL_URL}/${LAT_PACKAGE}.md5"
+  if [ "$(md5sum &packages;/${KERNEL_V%%-*}/${LAT_PACKAGE} | awk '{print $1}')" != "$(cat &packages;/${KERNEL_V%%-*}/${LAT_PACKAGE}.md5 | awk '{print $1}')" ]; then
     echo
     echo "----ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR----"
     echo "-----------------------CHECKSUM ERROR!-----------------------"
-    rm -rf &plugin;
+    rm -rf &plugin; &emhttp;
     exit 1
   fi
   echo
@@ -427,29 +432,26 @@ else
   echo
   echo "----ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR----"
   echo "-----------------Can't download ZFS package------------------"
-  rm -rf &plugin;
+  rm -rf &plugin; &emhttp;
   exit 1
 fi
 }
 
 check() {
-# Check for old packages
-rm -rf $(ls -d &packages;/${KERNEL_V%%-*}/zfs-*.tgz | grep -v "${KERNEL_V%%-*}")
-rm -rf $(ls -d &packages;/${KERNEL_V%%-*}/zfs-*.tgz | grep -v "${LAT_V}")
-if [ ! -f "&packages;/${KERNEL_V%%-*}/zfs-${LAT_V}-${KERNEL_V}-1.tgz" ]; then
+if ! ls -1 &packages;/${KERNEL_V%%-*}/ | grep -q "${PACKAGE}" ; then
   echo
-  echo "---------Downloading ZFS v${LAT_V}, please wait...!----------"
+  echo "---------Downloading ZFS v$(echo $LAT_PACKAGE | cut -d '-' -f2), please wait...!----------"
   echo "---This could take some time, please don't close this window!---"
   download
 else
   echo
-  echo "----------------ZFS v${CUR_V} found locally!-----------------"
+  echo "----------------ZFS v$(echo $LAT_PACKAGE | cut -d '-' -f2) found locally!-----------------"
 fi
 }
 
 install() {
 # Install ZFS
-/sbin/installpkg "&packages;/${KERNEL_V%%-*}/zfs-${LAT_V}-${KERNEL_V}-1.tgz"
+/sbin/installpkg "&packages;/${KERNEL_V%%-*}/${PACKAGE}*.tgz"
 /sbin/depmod -a
 }
 
@@ -461,8 +463,27 @@ zpool import -a >/dev/null 2>&amp;1
 chmod 755 /usr/local/emhttp/plugins/unRAID6-ZFS/
 }
 
+get_versions() {
+# Check if unstable versions are available and fall back to stable if no unstable detected
+if [ "$UNSTABLE_BUILDS" == "true" ]; then
+  AVAIL_V="$(wget -qO- https://api.github.com/repos/Steini1984/unRAID6-ZFS/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep "${PACKAGE}" | grep -E -v '\.md5$' | sort -V)"
+  if [ -z "$(echo "$AVAIL_V" | grep -E "rc|beta")" ]; then
+    echo
+    echo "--------------No unstable version from ZFS for---------------"
+    echo "---Kernel v${KERNEL_V%%-*} found, falling back to stable!----"
+    sed -i '/unstable_packages=/c\unstable_packages=false' "&plugin;/settings.cfg"
+    AVAIL_V="$(echo "$AVAIL_V" | grep -v -E "rc|beta")"
+  else
+    AVAIL_V="$(echo "$AVAIL_V" | grep -E "rc|beta")"
+  fi
+else
+  AVAIL_V="$(wget -qO- https://api.github.com/repos/Steini1984/unRAID6-ZFS/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep -E "${PACKAGE}" | grep -E -v '\.md5$' | sort -V | grep -v -E "rc|beta")"
+fi
+}
+
 # Define Variables
 KERNEL_V="$(uname -r)"
+PACKAGE="zfs"
 DL_URL="https://github.com/Steini1984/unRAID6-ZFS/releases/download/$KERNEL_V" 
 UPDATE_CHECK="$(cat &plugin;/settings.cfg | grep "check_for_updates" | cut -d '=' -f2)"
 UNSTABLE_BUILDS="$(cat &plugin;/settings.cfg | grep "unstable_packages" | cut -d '=' -f2)"
@@ -492,62 +513,46 @@ if find &packages; -maxdepth 1 -type f -name "*.tgz" 2>/dev/null ; then
   mv $(find &packages; -maxdepth 1 -type f -name "*.tgz") &packages;/${KERNEL_V%%-*}/ 2>/dev/null
 fi
 
-# Check for old packages directories
-rm -rf $(ls -d &packages;/* | grep -v "${KERNEL_V%%-*}")
-
 # Get local package version if available
-CUR_V="$(ls -p &packages;/${KERNEL_V%%-*} 2&gt;/dev/null | grep -E -v '\.md5' | sort -V | tail -1 | cut -d '-' -f2)"
-
-# Check if unstable versions are available and fall back to stable if no unstable detected
-if [ "$UNSTABLE_BUILDS" == "true" ]; then
-  AVAIL_V="$(wget -qO- https://api.github.com/repos/Steini1984/unRAID6-ZFS/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep -E 'zfs-.*.tgz' | grep -E -v '\.md5$' | sort -V | cut -d '-' -f2)"
-  if [ -z "$(echo "$AVAIL_V" | grep -E "rc|beta")" ]; then
-    echo
-    echo "--------------No unstable version from ZFS for---------------"
-    echo "---Kernel v${KERNEL_V%%-*} found, falling back to stable!----"
-    sed -i '/unstable_packages=/c\unstable_packages=false' "&plugin;/settings.cfg"
-    AVAIL_V="$(echo "$AVAIL_V" | grep -v -E "rc|beta")"
-  else
-    AVAIL_V="$(echo "$AVAIL_V" | grep -E "rc|beta")"
-  fi
-else
-  AVAIL_V="$(wget -qO- https://api.github.com/repos/Steini1984/unRAID6-ZFS/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep -E 'zfs-.*.tgz' | grep -E -v '\.md5$' | sort -V | cut -d '-' -f2 | grep -v -E "rc|beta" )"
-fi
+CUR_V="$(ls -p &packages;/${KERNEL_V%%-*} 2&gt;/dev/null | grep -E -v '\.md5' | sort -V | tail -1)"
 
 # Check if update check is enabled and set version
 if [ "$UPDATE_CHECK" != "true" ]; then
   if [ -z "$CUR_V" ]; then
-    LAT_V="$(echo "$AVAIL_V" | sort -V | tail -1)"
-    if [ -z "$LAT_V" ]; then
-      if [ -d &plugin; ]; then
-        rm -rf &plugin;
-      fi
+    get_versions
+    LAT_PACKAGE="$(echo "$AVAIL_V" | sort -V | tail -1)"
+    if [ -z "$LAT_PACKAGE" ]; then
       echo
       echo "----ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR----"
       echo "---Can't get latest ZFS version and found no local package---"
+      rm -rf &plugin; &emhttp;
       exit 1
     fi
   else
-    LAT_V="${CUR_V}"
+    LAT_PACKAGE="${CUR_V}"
   fi
 else
-  LAT_V="$(echo "$AVAIL_V" | sort -V | tail -1)"
-  if [ -z "$LAT_V" ]; then
+  get_versions
+  LAT_PACKAGE="$(echo "$AVAIL_V" | sort -V | tail -1)"
+  if [ -z "$LAT_PACKAGE" ]; then
     if [ -z "$CUR_V" ]; then
-      if [ -d &plugin; ]; then
-        rm -rf &plugin;
-      fi
       echo
       echo "----ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR----"
       echo "---Can't get latest ZFS version and found no local package---"
+      rm -rf &plugin; &emhttp;
       exit 1
     else
-      LAT_V="${CUR_V}"
+      LAT_PACKAGE="${CUR_V}"
       echo
-      echo "---Can't get latest ZFS version, using local ZFS package v$CUR_V!---"
+      echo "---Can't get latest ZFS version, using local ZFS package v$(echo $LAT_PACKAGE | cut -d '-' -f2)!---"
     fi
   fi
 fi
+
+# Check for old packages
+rm -rf $(ls -d &packages;/* | grep -v "${KERNEL_V%%-*}")
+rm -rf $(find &packages;/${KERNEL_V%%-*}/ -type f -maxdepth 1 | grep -v "${KERNEL_V%%-*}")
+rm -rf $(find &packages;/${KERNEL_V%%-*}/ -type f -maxdepth 1 | grep -v "${LAT_PACKAGE}")
 
 # Check for old packages and if ZFS is available locally
 check
@@ -555,14 +560,17 @@ check
 # Check if package is already installed, if not install it, and activate it
 if ! modinfo zfs -0 >/dev/null 2>&amp;1 ; then
   echo
-  echo "----------Installing ZFS v${LAT_V}, please wait...!----------"
+  echo "----------Installing ZFS v$(echo $LAT_PACKAGE | cut -d '-' -f2), please wait...!----------"
   install &gt;/dev/null
   activate &gt;/dev/null
   echo
-  echo "----------Installation of ZFS v${LAT_V} successful!----------"
+  echo "----------Installation of ZFS v$(echo $LAT_PACKAGE | cut -d '-' -f2) successful!----------"
   echo
 else
   activate &gt;/dev/null
+  echo
+  echo "----------Installation of ZFS v$(echo $LAT_PACKAGE | cut -d '-' -f2) successful!----------"
+  echo
 fi
 
 # Get zpools and scrub them if unclean shutdown was detected depending if enabled or not
@@ -647,7 +655,7 @@ echo "+=========================================================================
 # Remove plugin related files
 rm -rf &emhttp;
 rm -rf &plugin;
-echo ""
+echo
 echo "OpenZFS plugin uninstalled. ZFS will be active until next reboot!"
 </INLINE>
 </FILE>
