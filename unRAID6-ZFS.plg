@@ -485,8 +485,6 @@ fi
 KERNEL_V="$(uname -r)"
 PACKAGE="zfs"
 DL_URL="https://github.com/Steini1984/unRAID6-ZFS/releases/download/$KERNEL_V" 
-UPDATE_CHECK="$(cat &plugin;/settings.cfg | grep "check_for_updates" | cut -d '=' -f2)"
-UNSTABLE_BUILDS="$(cat &plugin;/settings.cfg | grep "unstable_packages" | cut -d '=' -f2)"
 
 # Create packages directory if non existent
 if [ ! -d "&packages;/${KERNEL_V%%-*}" ]; then
@@ -504,6 +502,10 @@ fi
 if [ ! "$(grep "unclean_shutdown_scrub=" &plugin;/settings.cfg)" ]; then
   echo "unclean_shutdown_scrub=true" &gt;&gt; &plugin;/settings.cfg
 fi
+
+# Get variables for update check and unstable builds
+UPDATE_CHECK="$(cat &plugin;/settings.cfg | grep "check_for_updates" | cut -d '=' -f2)"
+UNSTABLE_BUILDS="$(cat &plugin;/settings.cfg | grep "unstable_packages" | cut -d '=' -f2)"
 
 # Move old package directory to new package directory to be compliant with 6.11
 if find &packages; -maxdepth 1 -type f -name "*.tgz" 2>/dev/null ; then
